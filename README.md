@@ -27,8 +27,8 @@ Body:
 
 {
 
-	"id": "youUserID",
+	{"id": "youUserID",
 	
 	"presence": true // if you are doing your ENTERING trigger
-			  false // if you are doing your EXIT trigger
+			  false // if you are doing your EXIT trigger}
 }
