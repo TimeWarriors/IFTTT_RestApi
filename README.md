@@ -26,6 +26,7 @@ Content Type: application/json
 Body:
 
 {
+
 	"id": "youUserID",
 	
 	"presence": true // if you are doing your ENTERING trigger
