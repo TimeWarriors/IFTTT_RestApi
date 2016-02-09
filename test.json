@@ -1,7 +1,6 @@
 [
 	{
 		"type":"blink",
-	 	"userID":"1234",
-	 	"presence":true
+	 	"userID":"1234"
 	}
 ]
