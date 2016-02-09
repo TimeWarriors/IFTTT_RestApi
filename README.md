@@ -6,7 +6,7 @@ GUIDE:
 
 1. Create a new IFTTT trigger with eighter Android or iOS location triggers.
 
-2. Create a trigger for entering and area.
+2. Create a trigger for entering or exiting an area
 
 3. Place the trigger in the buildings area.
 
@@ -27,5 +27,5 @@ Body:
 
 	{"id": "youUserID", //This can be provided by the admin for the application
 	
-	"presence": true // if you are doing your ENTERING trigger
-			  false // if you are doing your EXIT trigger}
+	"presence": {{EnteredOrExited}}  //this is an ingridient you can create by clicking the bottle icon at the right corner, this 					 //will give true if you are entering the area, false if you exit it.
+	}
