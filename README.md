@@ -25,7 +25,7 @@ Content Type: application/json
 
 Body:
 
-	{"id": "youUserID",
+	{"id": "youUserID", //This can be provided by the admin for the application
 	
 	"presence": true // if you are doing your ENTERING trigger
 			  false // if you are doing your EXIT trigger}
