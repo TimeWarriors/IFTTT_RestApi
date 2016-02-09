@@ -18,11 +18,7 @@ app.post('/', function(req, res){
 		for (var i = 0; i < parsedContent.length; i++){
 			
 			if(parsedContent[i].type === "blink" && parsedContent[i].userID === data.id){
-				parsedContent[i].presence = data.presence;
-				
-				fsp.writeFile('../settings/settings.json', JSON.stringify(parsedContent)).then(() => {
-					console.log("overwritten");
-				});
+				//TODO: send a call to lightHandler to change the blink lamp depending on data.presence
 			}
 		}
 	});
