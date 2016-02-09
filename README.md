@@ -27,5 +27,6 @@ Body:
 
 	{"id": "youUserID", //This can be provided by the admin for the application
 	
-	"presence": {{EnteredOrExited}}  //this is an ingridient you can create by clicking the bottle icon at the right corner, this 					 //will give true if you are entering the area, false if you exit it.
+	"presence": {{EnteredOrExited}}  //this is an ingridient you can create by clicking the bottle icon at the right corner, this 					 
+					//will give true if you are entering the area, false if you exit it.
 	}
