@@ -10,7 +10,7 @@ var testRun = function(){
 	
 	console.log("options initated.");
 	
-	fsp.readFile("../settings/usersettings.json", {encoding:'utf8'}).then((contents) =>{
+	fsp.readFile("usersettings.json", {encoding:'utf8'}).then((contents) =>{
 		var parsedContent = JSON.parse(contents);
 		var data = null;
 					
