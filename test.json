@@ -1,16 +1,11 @@
 [
 	{
-<<<<<<< HEAD
+
 	 	"userID":"1234",
 		"public_data": {
 			"presence": true,
 			"name": "Johan_Leitet",
 			"img": "Img url"
 		}
-=======
-		"type":"blink",
-	 	"userID":"1234",
-		"presence": false
->>>>>>> e3e9479289ab4e3b2f6f44f660e6f9a3fd0faafe
 	}
 ]

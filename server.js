@@ -2,12 +2,6 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var app = express();
 var fsp = require("fs-promise");
-var lightHandler = require('../lightHandler/lightHandler'); 
-var lh = new lightHandler();
-var path = '../settings/settings.json';
-
-
-
 var http = require('http').Server(app);
 var test = require('http');
 var io = require('socket.io')(http);
@@ -19,16 +13,16 @@ var path = "";
 var fileName = "usersettings.json";
 
 app.use(bodyParser.json());
-app.use(express.static(__dirname + "/client_prototype"))
+app.use(express.static(__dirname + "/client"))
 
 //returns the index page for the client
 app.get('/', function(req, res){	
-	fsp.readFile(__dirname + "client_prototype/index.html", {encoding:'utf8'}).then((contents) =>{
+	fsp.readFile(__dirname + "client/index.html", {encoding:'utf8'}).then((contents) =>{
 		res.send(contents.toString());
 	});
 });
 
-<<<<<<< HEAD
+
 //returns public data from all registerd user in usersettings.json
 app.get("/userData", function(req, res){
 	var data = [];
@@ -44,9 +38,6 @@ app.get("/userData", function(req, res){
 	});	
 })
 
-=======
->>>>>>> e3e9479289ab4e3b2f6f44f660e6f9a3fd0faafe
-
 //Sets the presence in the settings JSON file to the users current presence.
 app.post('/update/:id/:presence', function(req, res){
 	
@@ -56,7 +47,6 @@ app.post('/update/:id/:presence', function(req, res){
 		presence: req.params.presence
 	};
 	
-<<<<<<< HEAD
 	
 	fsp.readFile(path+fileName, {encoding:'utf8'}).then((contents) =>{
 		var parsedContent = JSON.parse(contents);	
@@ -80,21 +70,6 @@ app.post('/update/:id/:presence', function(req, res){
 					io.emit('statusUpdated', content);
 					console.log("Status updated.");
 				});
-=======
-	fsp.readFile(path, {encoding:'utf8'}).then((contents) =>{
-		var parsedContent = JSON.parse(contents);		
-		
-		for (var i = 0; i < parsedContent.length; i++){
-			
-			if(parsedContent[i].type === "blink" && parsedContent[i].userID === data.id){
-				if(data.presence){
-					lh.changeColor(parsedContent[i].lampId, 0, 255, 0, 0);
-				}
-				else {
-					lh.changeColor(parsedContent[i].lampId, 255, 0, 0, 0);
-				}
-				return;
->>>>>>> e3e9479289ab4e3b2f6f44f660e6f9a3fd0faafe
 			}
 		}
 	});
