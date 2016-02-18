@@ -6,11 +6,13 @@ var http = require('http').Server(app);
 var test = require('http');
 var io = require('socket.io')(http);
 
-var scheduleHandler = require('./scheduleHandler.js');
-var sH = new scheduleHandler();
-
-var path = "";
 var fileName = "usersettings.json";
+
+var scheduleHandler = require('./scheduleHandler.js');
+var sH = new scheduleHandler(fileName);
+
+
+
 
 app.use(bodyParser.json());
 app.use(express.static(__dirname + "/client"))
@@ -27,7 +29,7 @@ app.get('/', function(req, res){
 app.get("/userData", function(req, res){
 	var data = [];
 	
-	fsp.readFile(path + fileName, {encoding:'utf8'}).then((contents) =>{
+	fsp.readFile(fileName, {encoding:'utf8'}).then((contents) =>{
 		var parsedContent = JSON.parse(contents);
 
 		for(var i = 0; i < parsedContent.length; i++){
@@ -48,7 +50,7 @@ app.post('/update/:id/:presence', function(req, res){
 	};
 	
 	
-	fsp.readFile(path+fileName, {encoding:'utf8'}).then((contents) =>{
+	fsp.readFile(fileName, {encoding:'utf8'}).then((contents) =>{
 		var parsedContent = JSON.parse(contents);	
 
 		for (var i = 0; i < parsedContent.length; i++){
@@ -65,15 +67,62 @@ app.post('/update/:id/:presence', function(req, res){
 				//public data for a user that had his/ her status just updated.
 				var content = parsedContent[i].public_data; //Jävla javascript ibland.
 						
-				fsp.writeFile(path + fileName, JSON.stringify(parsedContent)).then(() =>{
+				fsp.writeFile(fileName, JSON.stringify(parsedContent)).then(() =>{
 					//and the public data is emitted so the status can be updated in real time.
 					io.emit('statusUpdated', content);
 					console.log("Status updated.");
+					
 				});
 			}
 		}
 	});
 });
+
+app.post('/busy/:id/:status', function(req, res){
+	//NOTE: since presence is sent as param it is a string and not a booelean.
+	var data = {
+		id: req.params.id,
+		status: req.params.status
+	};
+	
+	//console.log(data);
+	
+	if(data.id === "1234"){
+		console.log("Johans ska sättas nu")
+	}
+	
+		
+	
+	fsp.readFile(fileName, {encoding:'utf8'}).then((contents) =>{
+		
+		var parsedContent = JSON.parse(contents);	
+		//console.log(parsedContent)
+		
+		for (var i = 0; i < parsedContent.length; i++){
+			if(parsedContent[i].userId === data.id){
+				
+				
+				if(data.status === "false"){
+					parsedContent[i].public_data.busy = false;
+				}
+				else if(data.status === "true"){
+					parsedContent[i].public_data.busy = true;
+				}
+				
+				var content = parsedContent[i].public_data; //Jävla javascript ibland.
+				console.log("FINAL SHOWDOWN:" + content.busy + " on user: " + content.name);
+						
+				fsp.writeFile(fileName, JSON.stringify(parsedContent)).then(() =>{
+					//and the public data is emitted so the status can be updated in real time.
+					io.emit('busyUpdated', content);
+					console.log("busy status updated.");
+					
+				});
+			}
+	}});
+	
+	
+})
 
 
 
