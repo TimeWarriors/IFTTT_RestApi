@@ -1,8 +1,9 @@
 var fsp = require("fs-promise");
 var http = require('http');
-var Promise = require('promise')
+var Promise = require('promise');
 var nodeSchedule = require('node-schedule');
 var timeEditApi = require('timeeditapi');
+
 var timeEdit = new timeEditApi('https://se.timeedit.net/web/lnu/db1/schema1/', 3);
 
 
@@ -11,6 +12,7 @@ function scheduleHandler(fileName){
 	this.InitiateTimers();	
 }
 
+//TODO: create one event per time where a user's busy status changes.
 scheduleHandler.prototype.InitiateTimers = function(){
 	var rule = new nodeSchedule.RecurrenceRule();
 	//rule.hour = 5;
@@ -19,7 +21,22 @@ scheduleHandler.prototype.InitiateTimers = function(){
 	var that = this;
 	console.log("Job is about to be scheduled")
 	nodeSchedule.scheduleJob(rule, function(){
-		console.log("Job is beign scheduled" + that.fileName);
+		fsp.readFile(that.fileName, {encoding:'utf8'}).then((data) =>{
+			var parsedData = JSON.parse(data);
+			//console.log(parsedData[userIndex])
+			
+			for(var userIndex in parsedData){
+				that.getUserSchedule(parsedData[userIndex]).then((userData)=>{
+					//console.log(userData);
+					for(var bookingIndex in userData.bookingData){
+						
+					}
+				});
+			}
+		});
+		
+	});
+		/*console.log("Job is beign scheduled" + that.fileName);
 		fsp.readFile(that.fileName, {encoding:'utf8'}).then((data) =>{
 			var parsedData = JSON.parse(data);
 			
@@ -66,7 +83,7 @@ scheduleHandler.prototype.InitiateTimers = function(){
 			
 			
 		});		
-	});
+	});*/
 	
 	
 }
@@ -76,13 +93,15 @@ scheduleHandler.prototype.getUserSchedule = function(user){
 	return new Promise((resolve, reject)=> {
 		var data = [];
 		
-		console.log(user.public_data.name.split("_").join(" "));//onsole.log(user.public_data.name.split("_").join(" "));
+		console.log(user.public_data.name.split("_").join(" "));//console.log(user.public_data.name.split("_").join(" "));
 		
 		timeEdit.getTodaysSchedule(user.public_data.name.split("_").join(" ")).then((schedule) =>{
 			//console.log(JSON.stringify(schedule, null, 2));
+			console.log(schedule);
+			//when there is no scheduel for the day it returns [ { id: 'Johan Leitet'} ] / [ { id: 'John Häggerud'} ]
 			for(var j = 0; j < schedule.length; j++){
-				data.push({startTime: schedule[j].booking.time.startTime,
-						  endTime: schedule[j].booking.time.endTime})
+				/*data.push({startTime: schedule[j].booking.time.startTime,
+						  endTime: schedule[j].booking.time.endTime})*/
 			}
 			
 			user.bookingData = data;
@@ -91,7 +110,7 @@ scheduleHandler.prototype.getUserSchedule = function(user){
 			
 		}).catch((err)=>{
 			console.log("Error occured during the process of getting the schedule.");
-			reject(err);
+			console.log(err);
 		})
 		//return resolve(userName);
 	});

@@ -1,15 +1,13 @@
 var http = require('http');
 var fsp = require('fs-promise');
 
-var testID = "1234";
+var testID = "5678";
 var testValue;
 
 
 //test script for the app.post
 var testRun = function(){
-	
-	console.log("options initated.");
-	
+
 	fsp.readFile("usersettings.json", {encoding:'utf8'}).then((contents) =>{
 		var parsedContent = JSON.parse(contents);
 		var data = null;
@@ -30,6 +28,8 @@ var testRun = function(){
 			testValue = true;
 		}
 			
+		console.log("options initated.");
+		
 		var options = {
 			host: "localhost",
 			path: "/update/"+testID+"/"+testValue,
@@ -71,6 +71,32 @@ var testRun = function(){
 		
 			  
 	});		
+}
+
+
+
+var testBody = function(){
+	
+	var postData = JSON.stringify({
+		msg: 'Hello worldu.'
+	})
+	var options = {
+			host: "localhost",
+			path: "/test",
+			method: 'POST',
+			port: '3000',
+			headers: {
+				'Content-Type': 'application/json',
+				'Content-Length': postData.length
+			}
+		};
+
+		var req = http.request(options);				   
+				
+		req.write(postData)
+	   	req.end();
+	
+		//console.log("After end.")
 }
 
 testRun();
