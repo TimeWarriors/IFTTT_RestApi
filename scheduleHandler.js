@@ -20,72 +20,102 @@ scheduleHandler.prototype.InitiateTimers = function(){
 	
 	var that = this;
 	console.log("Job is about to be scheduled")
+	
 	nodeSchedule.scheduleJob(rule, function(){
+		
 		fsp.readFile(that.fileName, {encoding:'utf8'}).then((data) =>{
-			var parsedData = JSON.parse(data);
-			//console.log(parsedData[userIndex])
 			
-			for(var userIndex in parsedData){
-				that.getUserSchedule(parsedData[userIndex]).then((userData)=>{
-					//console.log(userData);
-					for(var bookingIndex in userData.bookingData){
+			return new Promise((resolve, reject) =>{
+				
+				var parsedData = JSON.parse(data);
+				
+				if(parsedData.length === undefined || 0){
+					reject("The settings file is empty");
+				}
+				
+				var BookedUsers = [];
+				var expectedIndex = parsedData.length;
+				for(var i = 0; i < parsedData.length; i++){
+					//console.log(i);
+					that.getUserSchedule(parsedData[i]).then((userData)=>{
+						//if a user has bookings then they are added to the array
+						if(userData.bookingData.length > 0){
+							BookedUsers.push(userData);
+						}
+						//else if a user doesnt have a booking for the day the expected index is lowerd.
+						else {
+							expectedIndex -= 1;
+						}
 						
+						//Bookedusers length and expected length are equal then the loop is finished
+						if(BookedUsers.length === expectedIndex){
+							return resolve(BookedUsers);
+						}
+					});
+				}
+				
+			})
+			
+			
+			
+		}).then((bookedUsers) =>{
+			//console.log(bookedUsers)
+			//console.log(bookedUsers[0].bookingData)
+			var EventTimes = [];
+			var Events = [];
+			//[ {	time: 12:00, userEvents: [{id: bookedUsers[0].userId, busy: true/false, room: bookedUsers[0].bookingData.lectureRoom}] }	]
+			for(var i = 0; i < bookedUsers.length; i ++){
+				
+				for(var j = 0; j < bookedUsers[i].bookingData.length; j++){
+					
+					//if an event time is not in the event times array it's added
+					if(EventTimes.indexOf(bookedUsers[i].bookingData[j].startTime) === -1){
+						EventTimes.push(bookedUsers[i].bookingData[j].startTime)
 					}
-				});
+					if(EventTimes.indexOf(bookedUsers[i].bookingData[j].endTime) === -1){
+						EventTimes.push(bookedUsers[i].bookingData[j].endTime)
+					}
+					
+					//All events are added to the Events array
+					Events.push({
+								time: bookedUsers[i].bookingData[j].startTime,
+								id: bookedUsers[i].userId,
+								busy: true,
+								lectureRoom: bookedUsers[i].bookingData[j].lectureRoom
+							});
+					
+					Events.push({
+								time: bookedUsers[i].bookingData[j].endTime,
+								id: bookedUsers[i].userId,
+								busy: false,
+								lectureRoom: ""
+							});
+				}
 			}
+			
+			console.log(EventTimes);
+			console.log(Events);
+			//NOTE: NOT TESTED YET! CONFIRM LOGGED DATA
+			
+			var scheduledEvents = [];
+			
+			for (var i = 0; i < EventTimes.length; i++){
+				scheduledEvents.push({time : EventTimes[i], events: []})
+				for (var j = 0; j < Events.length; j++){
+					
+					if(Events[j].time === EventTimes[i]){
+						scheduledEvents[i].events.push(Events[j]);
+						//remove the obj to shorten furhter loops.
+						Events.splice(j, 1);
+					}
+				}
+			}
+			
+			console.log("schamalagda events: " + scheduledEvents)
+			that.scheduleEvents(scheduledEvents);
 		});
 		
-	});
-		/*console.log("Job is beign scheduled" + that.fileName);
-		fsp.readFile(that.fileName, {encoding:'utf8'}).then((data) =>{
-			var parsedData = JSON.parse(data);
-			
-			for(var i = 0; i < parsedData.length; i++){
-				
-				that.getUserSchedule(parsedData[i]).then((userData)=>{
-					
-					//date obj used to get the year, month and day for the events that are going to be created.
-					var date = new Date();
-					
-					console.log(userData.bookingData);
-					console.log(userData.bookingData.length);
-					for(var j = 0; j < userData.bookingData.length; j++){
-
-						var timeString = userData.bookingData[j].startTime;
-						var stringIndex = timeString.indexOf(":");
-						var hour = timeString.substr(0, stringIndex);
-						var minute = timeString.substr(stringIndex+1);
-						//console.log(hour +"sh");
-						//console.log(minute +"sm");
-						//initaites an event to set user status to busy.
-						//console.log(userData);
-						that.InitaiteBusyModeEvent(userData, new Date(date.getFullYear(), date.getMonth(), date.getDate(), hour, 53, 00), true).then(() => {
-							
-						});
-						
-						timeString = userData.bookingData[j].endTime;
-						stringIndex = timeString.indexOf(":");
-						hour = timeString.substr(0, stringIndex);
-						minute = timeString.substr(stringIndex+1);
-						
-						//console.log(hour+"eh");
-						//console.log(minute+"em");
-						//initates an event to revert the busy status
-						that.InitaiteBusyModeEvent(userData, new Date(date.getFullYear(), date.getMonth(), date.getDate(), hour, minute, 00), false).then(() => {
-							
-						});
-						
-						
-						console.log(bookings[index]);
-					}
-				});
-			}
-			
-			
-		});		
-	});*/
-	
-	
+	});	
 }
 
 scheduleHandler.prototype.getUserSchedule = function(user){
@@ -93,16 +123,39 @@ scheduleHandler.prototype.getUserSchedule = function(user){
 	return new Promise((resolve, reject)=> {
 		var data = [];
 		
-		console.log(user.public_data.name.split("_").join(" "));//console.log(user.public_data.name.split("_").join(" "));
+		//console.log(user.public_data.name.split("_").join(" "));//console.log(user.public_data.name.split("_").join(" "));
 		
 		timeEdit.getTodaysSchedule(user.public_data.name.split("_").join(" ")).then((schedule) =>{
 			//console.log(JSON.stringify(schedule, null, 2));
-			console.log(schedule);
-			//when there is no scheduel for the day it returns [ { id: 'Johan Leitet'} ] / [ { id: 'John Häggerud'} ]
-			for(var j = 0; j < schedule.length; j++){
-				/*data.push({startTime: schedule[j].booking.time.startTime,
-						  endTime: schedule[j].booking.time.endTime})*/
+			//console.log(schedule[0].booking.columns[2]);
+			/*[ { booking:
+			 { time: [Object],
+			   id: 'Johan Leitet',
+			   bookingId: '305368',
+			   columns: [Object] } } ]*/
+			/*columns = [ '1DV023, NGWEC15h, NGWEC15h1',
+					  'VT16-R0120-0121, HT15-61017, HT15-61018',
+					  'Ny105K',
+					  'Johan Leitet, John Häggerud, Mats Loock',
+					  '',
+					  'Föreläsning',
+					  '',
+					  '',
+					  'https://connect.sunet.se/lecture-1dv023/' ]*/
+  									
+			if(schedule[0].booking === undefined){
+				console.log("No more bookings for this person this day.")
 			}
+			else {
+				for(var j = 0; j < schedule.length; j++){
+				data.push({startTime: schedule[j].booking.time.startTime,
+						  endTime: schedule[j].booking.time.endTime,
+						 lectureRoom: schedule[j].booking.columns[2] || "Not specified."})
+				}
+			}
+
+			//when there is no scheduel for the day it returns [ { id: 'Johan Leitet'} ] / [ { id: 'John Häggerud'} ]
+			
 			
 			user.bookingData = data;
 			
@@ -116,45 +169,48 @@ scheduleHandler.prototype.getUserSchedule = function(user){
 	});
 }
 
-scheduleHandler.prototype.InitaiteBusyModeEvent = function(user, date, busyStatus){
-	//console.log(user.userId);
-	var userData = user;
-	var dateTime = date;
-	var busyStatusData = busyStatus;
+
+scheduleHandler.prototype.scheduleEvents = function(scheduledEvents){
+	var date = new Date();
+	var hour;
+	var minute;
+	var stringIndex;
 	
-	return new Promise((resolve, reject) => {
+	/*var timeString = userData.bookingData[j].startTime;
+	var stringIndex = timeString.indexOf(":");
+	var hour = timeString.substr(0, stringIndex);
+	var minute = timeString.substr(stringIndex+1);*/
+	for (var i = 0; i < scheduledEvents.length; i++){
 		
-		console.log(userData.userId);
+		stringIndex = scheduledEvents[i].time.indexOf(":");
+		hour = scheduledEvents[i].time.substr(0, stringIndex);
+		minute = scheduledEvents[i].time.substr(stringIndex + 1);
 		
-		nodeSchedule.scheduleJob(dateTime, function(){
-		var options = {
-			host: "localhost",
-			path: "/busy/"+userData.userId+"/"+busyStatusData,
-			method: 'POST',
-			port: '3000'
-		};
+		//Saves the data for this scheduled event to later bind it to the scheduledJob
+		var data = scheduledEvents[i].events;
 		
+		//initates a scheduled job and sends all the data scheduled for that time.
+		nodeSchedule.scheduleJob(new Date(date.getFullYear(), date.getMonth(), date.getDate(), hour, minute, 00), function(scheduleData){
+			
+			var postData = JSON.stringify(scheduleData);
+			
+			var options = {
+				host: "localhost",
+				path: "/busy",
+				method: 'POST',
+				port: '3000',
+				headers: {
+					'Content-Type': 'application/json',
+					'Content-Length': postData.length
+				}
+			};
 
-		var req = http.request(options, function(res){
-			//req sent
-			return resolve();
-		}).on('error', (err) =>{
-			reject(err);
-		})
+			var req = http.request(options);				   
 
-		req.end();
-		})
-	});
-	
-}
-
-scheduleHandler.prototype.StartEvent = function(data){
-	/*timeEdit.search('John_Häggerud')
-    .then((result) => {
-        console.log(JSON.stringify(result, null ,2));
-    }).catch((er) => {
-        console.log(er);
-    });*/
+			req.write(postData)
+			req.end();
+		}).bind(null, data)
+	}
 }
 
 module.exports = scheduleHandler;

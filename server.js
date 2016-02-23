@@ -120,50 +120,10 @@ app.post('/update/:id/:presence', function(req, res){
 	
 });
 
-app.post('/busy/:id/:status', function(req, res){
-	//NOTE: since presence is sent as param it is a string and not a booelean.
-	var data = {
-		id: req.params.id,
-		status: req.params.status
-	};
-	
-	//console.log(data);
-	
-	if(data.id === "1234"){
-		console.log("Johans ska sättas nu")
-	}
-	
-		
-	
-	fsp.readFile(fileName, {encoding:'utf8'}).then((contents) =>{
-		
-		var parsedContent = JSON.parse(contents);	
-		//console.log(parsedContent)
-		
-		for (var i = 0; i < parsedContent.length; i++){
-			if(parsedContent[i].userId === data.id){
-				
-				
-				if(data.status === "false"){
-					parsedContent[i].public_data.busy = false;
-				}
-				else if(data.status === "true"){
-					parsedContent[i].public_data.busy = true;
-				}
-				
-				var content = parsedContent[i].public_data; //Jävla javascript ibland.
-				console.log("FINAL SHOWDOWN:" + content.busy + " on user: " + content.name);
-						
-				fsp.writeFile(fileName, JSON.stringify(parsedContent)).then(() =>{
-					//and the public data is emitted so the status can be updated in real time.
-					io.emit('busyUpdated', content);
-					console.log("busy status updated.");
-					
-				});
-			}
-	}});
-	
-	
+//TODO:This needs to be refactored because if 2 calls where to happen 
+//at the same time only one would get it's status saved in the json file.
+app.post('/busy', function(req, res){
+	console.log(req.body);
 })
 
 
@@ -177,5 +137,6 @@ app.post('/test', function(req, res){
 
 
 app.listen(3000, function(){
+	//test stuff here
 	console.log("listening on port 3000");
 });
