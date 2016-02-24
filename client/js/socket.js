@@ -14,3 +14,4 @@ var socket = io();
                 teachRes.className = "teachResNotPresent";
             }
 })
+		  

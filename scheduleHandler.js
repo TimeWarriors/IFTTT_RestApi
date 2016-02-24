@@ -1,39 +1,212 @@
 var fsp = require("fs-promise");
+var http = require('http');
+var Promise = require('promise');
 var nodeSchedule = require('node-schedule');
 var timeEditApi = require('timeeditapi');
+
 var timeEdit = new timeEditApi('https://se.timeedit.net/web/lnu/db1/schema1/', 3);
 
-function scheduleHandler(){
-	this.InitiateTimer();
-	
+
+function scheduleHandler(fileName){
+	this.fileName = fileName;
+	this.InitiateTimers();	
 }
 
-scheduleHandler.prototype.InitiateTimer = function(){
+//TODO: create one event per time where a user's busy status changes.
+scheduleHandler.prototype.InitiateTimers = function(){
 	var rule = new nodeSchedule.RecurrenceRule();
 	//rule.hour = 5;
 	rule.second = 30;
 	
-	nodeSchedule.scheduleJob(rule, this.testRun);
+	var that = this;
+	console.log("Job is about to be scheduled")
 	
-	this.testRun();
+	nodeSchedule.scheduleJob(rule, function(){
+		
+		fsp.readFile(that.fileName, {encoding:'utf8'}).then((data) =>{
+			
+			return new Promise((resolve, reject) =>{
+				
+				var parsedData = JSON.parse(data);
+				
+				if(parsedData.length === undefined || 0){
+					reject("The settings file is empty");
+				}
+				
+				var BookedUsers = [];
+				var expectedIndex = parsedData.length;
+				for(var i = 0; i < parsedData.length; i++){
+					//console.log(i);
+					that.getUserSchedule(parsedData[i]).then((userData)=>{
+						//if a user has bookings then they are added to the array
+						if(userData.bookingData.length > 0){
+							BookedUsers.push(userData);
+						}
+						//else if a user doesnt have a booking for the day the expected index is lowerd.
+						else {
+							expectedIndex -= 1;
+						}
+						
+						//Bookedusers length and expected length are equal then the loop is finished
+						if(BookedUsers.length === expectedIndex){
+							return resolve(BookedUsers);
+						}
+					});
+				}
+				
+			})
+			
+			
+			
+		}).then((bookedUsers) =>{
+			//console.log(bookedUsers)
+			//console.log(bookedUsers[0].bookingData)
+			var EventTimes = [];
+			var Events = [];
+			
+			for(var i = 0; i < bookedUsers.length; i ++){
+				
+				for(var j = 0; j < bookedUsers[i].bookingData.length; j++){
+					
+					//if an event time is not in the event times array it's added
+					if(EventTimes.indexOf(bookedUsers[i].bookingData[j].startTime) === -1){
+						EventTimes.push(bookedUsers[i].bookingData[j].startTime)
+					}
+					if(EventTimes.indexOf(bookedUsers[i].bookingData[j].endTime) === -1){
+						EventTimes.push(bookedUsers[i].bookingData[j].endTime)
+					}
+					
+					//All events are added to the Events array
+					Events.push({
+								time: bookedUsers[i].bookingData[j].startTime,
+								id: bookedUsers[i].userId,
+								busyStatus: true,
+								lectureRoom: bookedUsers[i].bookingData[j].lectureRoom
+							});
+					
+					Events.push({
+								time: bookedUsers[i].bookingData[j].endTime,
+								id: bookedUsers[i].userId,
+								busyStatus: false,
+								lectureRoom: ""
+							});
+				}
+			}
+			
+			//Example of how scheduledEvents will look like: [ { time: 12:00, userEvents: [{id: bookedUsers[x].userId, busy: true/false, room: bookedUsers[x].bookingData.lectureRoom}, ... ] }, ...]
+			var scheduledEvents = [];
+			
+			for (var i = 0; i < EventTimes.length; i++){
+				scheduledEvents.push({time : EventTimes[i], events: []})
+				for (var j = 0; j < Events.length; j++){
+					
+					if(Events[j].time === EventTimes[i]){
+						scheduledEvents[i].events.push(Events[j]);
+						//remove the obj to shorten furhter loops.
+						Events.splice(j, 1);
+					}
+				}
+			}
+			
+			that.scheduleEvents(scheduledEvents);
+		});
+		
+	});	
 }
 
-scheduleHandler.prototype.getTodaysSchedule = function(){
-	timeEdit.getTodaysSchedule('Johan Leitet').then((schedule) =>{
-		console.log(JSON.stringify(schedule, null, 2));
-		console.log(schedule[0].booking.time.startTime)
-	}).catch((err)=>{
-		console.log("ERROR: "+ err);
-	})
+scheduleHandler.prototype.getUserSchedule = function(user){
+	
+	return new Promise((resolve, reject)=> {
+		var data = [];
+		
+		//console.log(user.public_data.name.split("_").join(" "));//console.log(user.public_data.name.split("_").join(" "));
+		
+		timeEdit.getTodaysSchedule(user.public_data.name.split("_").join(" ")).then((schedule) =>{
+			//console.log(JSON.stringify(schedule, null, 2));
+			//console.log(schedule[0].booking.columns[2]);
+			/*[ { booking:
+			 { time: [Object],
+			   id: 'Johan Leitet',
+			   bookingId: '305368',
+			   columns: [Object] } } ]*/
+			/*columns = [ '1DV023, NGWEC15h, NGWEC15h1',
+					  'VT16-R0120-0121, HT15-61017, HT15-61018',
+					  'Ny105K',
+					  'Johan Leitet, John Häggerud, Mats Loock',
+					  '',
+					  'Föreläsning',
+					  '',
+					  '',
+					  'https://connect.sunet.se/lecture-1dv023/' ]*/
+  									
+			if(schedule[0].booking === undefined){
+				console.log("No more bookings for this person this day.")
+			}
+			else {
+				for(var j = 0; j < schedule.length; j++){
+				data.push({startTime: schedule[j].booking.time.startTime,
+						  endTime: schedule[j].booking.time.endTime,
+						 lectureRoom: schedule[j].booking.columns[2] || "Not specified."})
+				}
+			}
+
+			//when there is no scheduel for the day it returns [ { id: 'Johan Leitet'} ] / [ { id: 'John Häggerud'} ]
+			
+			
+			user.bookingData = data;
+			
+			return resolve(user);
+			
+		}).catch((err)=>{
+			console.log("Error occured during the process of getting the schedule.");
+			console.log(err);
+		})
+		//return resolve(userName);
+	});
 }
 
-scheduleHandler.prototype.testRun = function(){
-	timeEdit.search('John_Häggerud')
-    .then((result) => {
-        console.log(JSON.stringify(result, null ,2));
-    }).catch((er) => {
-        console.log(er);
-    });
+
+scheduleHandler.prototype.scheduleEvents = function(scheduledEvents){
+	var date = new Date();
+	var hour;
+	var minute;
+	var stringIndex;
+	
+	/*var timeString = userData.bookingData[j].startTime;
+	var stringIndex = timeString.indexOf(":");
+	var hour = timeString.substr(0, stringIndex);
+	var minute = timeString.substr(stringIndex+1);*/
+	console.log("before loop")
+	for (var i = 0; i < scheduledEvents.length; i++){
+		
+		stringIndex = scheduledEvents[i].time.indexOf(":");
+		hour = scheduledEvents[i].time.substr(0, stringIndex);
+		minute = scheduledEvents[i].time.substr(stringIndex + 1);
+		
+		//Saves the data for this scheduled event to later bind it to the scheduledJob
+		var data = scheduledEvents[i].events;
+		
+		//initates a scheduled job and sends all the data scheduled for that time.
+		nodeSchedule.scheduleJob(new Date(date.getFullYear(), date.getMonth(), date.getDate(), hour, 01, 00), function(scheduleData){
+
+			var postData = JSON.stringify(scheduleData);
+			
+			var options = {
+				host: "localhost",
+				path: "/busy",
+				method: 'POST',
+				port: '3000',
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			};
+
+			var req = http.request(options);				   
+
+			req.write(postData)
+			req.end();
+		}.bind(null, data))
+	}
 }
 
 module.exports = scheduleHandler;
