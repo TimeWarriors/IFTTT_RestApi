@@ -124,6 +124,25 @@ app.post('/update/:id/:presence', function(req, res){
 //at the same time only one would get it's status saved in the json file.
 app.post('/busy', function(req, res){
 	console.log(req.body);
+	var events = req.body;
+	fsp.readFile(fileName, {encoding:'utf8'}).then((contents) => {
+		var parsedContents = JSON.parse(contents);
+		
+		for(var i = 0; i < events.length; i++){
+			for (var j = 0; j < parsedContents.length; j++){
+				if(events[i].id === parsedContents[j].userId){
+					parsedContents[j].public_data.busy = events[i].busyStatus;
+					parsedContents[j].public_data.inRoom = events[i].lectureRoom;
+					break;
+				}
+			}
+		}
+		
+		fsp.writeFile(fileName, JSON.stringify(parsedContents)).then(() =>{
+			//Socket emit here	
+			console.log("Confirm")
+		});
+	})
 })
 
 

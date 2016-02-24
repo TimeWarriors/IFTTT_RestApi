@@ -63,7 +63,7 @@ scheduleHandler.prototype.InitiateTimers = function(){
 			//console.log(bookedUsers[0].bookingData)
 			var EventTimes = [];
 			var Events = [];
-			//[ {	time: 12:00, userEvents: [{id: bookedUsers[0].userId, busy: true/false, room: bookedUsers[0].bookingData.lectureRoom}] }	]
+			
 			for(var i = 0; i < bookedUsers.length; i ++){
 				
 				for(var j = 0; j < bookedUsers[i].bookingData.length; j++){
@@ -80,23 +80,20 @@ scheduleHandler.prototype.InitiateTimers = function(){
 					Events.push({
 								time: bookedUsers[i].bookingData[j].startTime,
 								id: bookedUsers[i].userId,
-								busy: true,
+								busyStatus: true,
 								lectureRoom: bookedUsers[i].bookingData[j].lectureRoom
 							});
 					
 					Events.push({
 								time: bookedUsers[i].bookingData[j].endTime,
 								id: bookedUsers[i].userId,
-								busy: false,
+								busyStatus: false,
 								lectureRoom: ""
 							});
 				}
 			}
 			
-			console.log(EventTimes);
-			console.log(Events);
-			//NOTE: NOT TESTED YET! CONFIRM LOGGED DATA
-			
+			//Example of how scheduledEvents will look like: [ { time: 12:00, userEvents: [{id: bookedUsers[x].userId, busy: true/false, room: bookedUsers[x].bookingData.lectureRoom}, ... ] }, ...]
 			var scheduledEvents = [];
 			
 			for (var i = 0; i < EventTimes.length; i++){
@@ -111,7 +108,6 @@ scheduleHandler.prototype.InitiateTimers = function(){
 				}
 			}
 			
-			console.log("schamalagda events: " + scheduledEvents)
 			that.scheduleEvents(scheduledEvents);
 		});
 		
@@ -180,6 +176,7 @@ scheduleHandler.prototype.scheduleEvents = function(scheduledEvents){
 	var stringIndex = timeString.indexOf(":");
 	var hour = timeString.substr(0, stringIndex);
 	var minute = timeString.substr(stringIndex+1);*/
+	console.log("before loop")
 	for (var i = 0; i < scheduledEvents.length; i++){
 		
 		stringIndex = scheduledEvents[i].time.indexOf(":");
@@ -190,8 +187,8 @@ scheduleHandler.prototype.scheduleEvents = function(scheduledEvents){
 		var data = scheduledEvents[i].events;
 		
 		//initates a scheduled job and sends all the data scheduled for that time.
-		nodeSchedule.scheduleJob(new Date(date.getFullYear(), date.getMonth(), date.getDate(), hour, minute, 00), function(scheduleData){
-			
+		nodeSchedule.scheduleJob(new Date(date.getFullYear(), date.getMonth(), date.getDate(), hour, 01, 00), function(scheduleData){
+
 			var postData = JSON.stringify(scheduleData);
 			
 			var options = {
@@ -200,8 +197,7 @@ scheduleHandler.prototype.scheduleEvents = function(scheduledEvents){
 				method: 'POST',
 				port: '3000',
 				headers: {
-					'Content-Type': 'application/json',
-					'Content-Length': postData.length
+					'Content-Type': 'application/json'
 				}
 			};
 
@@ -209,7 +205,7 @@ scheduleHandler.prototype.scheduleEvents = function(scheduledEvents){
 
 			req.write(postData)
 			req.end();
-		}).bind(null, data)
+		}.bind(null, data))
 	}
 }
 
