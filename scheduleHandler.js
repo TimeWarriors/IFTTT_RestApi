@@ -12,14 +12,14 @@ function scheduleHandler(fileName){
 	this.InitiateTimers();	
 }
 
-//TODO: create one event per time where a user's busy status changes.
+//creates a daily event that will inturn create events whenever a registerd user is busy on their timeedit schedule
 scheduleHandler.prototype.InitiateTimers = function(){
 	var rule = new nodeSchedule.RecurrenceRule();
-	//rule.hour = 5;
+	
+	rule.hour = 5;
 	rule.second = 30;
 	
 	var that = this;
-	console.log("Job is about to be scheduled")
 	
 	nodeSchedule.scheduleJob(rule, function(){
 		
@@ -122,22 +122,6 @@ scheduleHandler.prototype.getUserSchedule = function(user){
 		//console.log(user.public_data.name.split("_").join(" "));//console.log(user.public_data.name.split("_").join(" "));
 		
 		timeEdit.getTodaysSchedule(user.public_data.name.split("_").join(" ")).then((schedule) =>{
-			//console.log(JSON.stringify(schedule, null, 2));
-			//console.log(schedule[0].booking.columns[2]);
-			/*[ { booking:
-			 { time: [Object],
-			   id: 'Johan Leitet',
-			   bookingId: '305368',
-			   columns: [Object] } } ]*/
-			/*columns = [ '1DV023, NGWEC15h, NGWEC15h1',
-					  'VT16-R0120-0121, HT15-61017, HT15-61018',
-					  'Ny105K',
-					  'Johan Leitet, John Häggerud, Mats Loock',
-					  '',
-					  'Föreläsning',
-					  '',
-					  '',
-					  'https://connect.sunet.se/lecture-1dv023/' ]*/
   									
 			if(schedule[0].booking === undefined){
 				console.log("No more bookings for this person this day.")
