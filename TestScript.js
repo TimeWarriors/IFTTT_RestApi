@@ -1,7 +1,7 @@
 var http = require('http');
 var fsp = require('fs-promise');
 
-var testID = "5678";
+var testID = "1234";
 var testValue;
 
 
@@ -36,11 +36,11 @@ var testRun = function(){
 			method: 'POST',
 			port: '3000'
 		};
-
+		
 		var req = http.request(options, function(res){
-			console.log("Status code for test call = " + res.statusCode);	
+			//console.log("Status code for test call = " + res.statusCode);	
 
-			fsp.readFile("../settings/usersettings.json", {encoding:'utf8'}).then((contents) =>{
+			/*fsp.readFile("../settings/usersettings.json", {encoding:'utf8'}).then((contents) =>{
 				var parsedContent = JSON.parse(contents);
 				var data = null;
 
@@ -64,7 +64,7 @@ var testRun = function(){
 				}
 
 
-			});
+			});*/
 		})
 
 		req.end();	
