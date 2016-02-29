@@ -8,7 +8,7 @@ const TimeEditCrawler = class {
 
         this.searchURL = `objects.html?max=15&fr=t&partajax=t&im=f&sid=3&l=sv_SE&search_text=&types=${types}`;
         this.scheduleUrl = 'ri.json?h=f&sid=3&p=0.m%2C12.n&objects=&ox=0&types=0&fe=0&h2=f';
-
+        this.typeUrlExtension = 'ri1Q7.html';
         this.searchText = 'search_text=';
         this.objectsText = 'objects=';
     }
@@ -27,6 +27,10 @@ const TimeEditCrawler = class {
                 return reject(error);
             });
         });
+    }
+
+    getTypeUrl(){
+        return this.originUrl+this.typeUrlExtension;
     }
 
     buildDataURL(id){

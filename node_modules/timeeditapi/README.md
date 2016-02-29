@@ -1,16 +1,31 @@
 
 
-#### Example
+#### Examples
 
 
+get all the types available
 ```javascript
-const timeEdidApiLnu = new TimeEdidApi(
+
+const TimeEdidApi = require('timeeditApi');
+
+TimeEdidApi.getAllTypes(
+        'https://se.timeedit.net/web/lnu/db1/schema1/'
+    ).then((result) => {
+        console.log(JSON.stringify(result, null ,2));
+    }).catch((er) => {
+        console.log(er);
+    });
+```
+
+Get schedule
+```javascript
+const timeEdidApi = new TimeEdidApi(
     'https://se.timeedit.net/web/lnu/db1/schema1/',
     4
 );
 
 // todays schedule
-timeEdidApiLnu.getTodaysSchedule('ny105')
+timeEdidApi.getTodaysSchedule('ny105')
     .then((roomSchedule) => {
         console.log(JSON.stringify(roomSchedule, null ,2));
     }).catch((er) => {
@@ -18,7 +33,7 @@ timeEdidApiLnu.getTodaysSchedule('ny105')
     });
 
 // full schedule
-timeEdidApiLnu.getSchedule('ny105')
+timeEdidApi.getSchedule('ny105')
     .then((schedule) => {
         console.log(JSON.stringify(schedule, null ,2));
     }).catch((er) => {
@@ -26,7 +41,7 @@ timeEdidApiLnu.getSchedule('ny105')
     });
 
 // search and se if exists
-timeEdidApiLnu.search('ny105')
+timeEdidApi.search('ny105')
     .then((result) => {
         console.log(JSON.stringify(result, null ,2));
     }).catch((er) => {

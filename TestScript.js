@@ -11,15 +11,15 @@ var testRun = function(){
 	fsp.readFile("usersettings.json", {encoding:'utf8'}).then((contents) =>{
 		var parsedContent = JSON.parse(contents);
 		var data = null;
-					
+
 		for(var i = 0; i < parsedContent.length; i++){
-			if(parsedContent[i].userId === testID){							
+			if(parsedContent[i].userId === testID){
 				data = parsedContent[i];
 				break;
 			}
 
 		}
-		
+
 		//set the test value to the opposite so it will allways change the value
 		if(data.public_data.presence){
 			testValue = false;
@@ -27,25 +27,25 @@ var testRun = function(){
 		else {
 			testValue = true;
 		}
-			
+
 		console.log("options initated.");
-		
+
 		var options = {
 			host: "localhost",
 			path: "/update/"+testID+"/"+testValue,
 			method: 'POST',
 			port: '3000'
 		};
-		
-		var req = http.request(options, function(res){
-			//console.log("Status code for test call = " + res.statusCode);	
 
-			/*fsp.readFile("../settings/usersettings.json", {encoding:'utf8'}).then((contents) =>{
+		var req = http.request(options, function(res){
+			console.log("Status code for test call = " + res.statusCode);
+
+			fsp.readFile("../settings/usersettings.json", {encoding:'utf8'}).then((contents) =>{
 				var parsedContent = JSON.parse(contents);
 				var data = null;
 
 				for(var i = 0; i < parsedContent.length; i++){
-					if(parsedContent[i].userId === testID){							
+					if(parsedContent[i].userId === testID){
 						data = parsedContent[i];
 						break;
 					}
@@ -64,19 +64,19 @@ var testRun = function(){
 				}
 
 
-			});*/
+			});
 		})
 
-		req.end();	
-		
-			  
-	});		
+		req.end();
+
+
+	});
 }
 
 
 
 var testBody = function(){
-	
+
 	var postData = JSON.stringify({
 		msg: 'Hello worldu.'
 	})
@@ -86,16 +86,15 @@ var testBody = function(){
 			method: 'POST',
 			port: '3000',
 			headers: {
-				'Content-Type': 'application/json',
-				'Content-Length': postData.length
+				'Content-Type': 'application/json'
 			}
 		};
 
-		var req = http.request(options);				   
-				
+		var req = http.request(options);
+
 		req.write(postData)
 	   	req.end();
-	
+
 		//console.log("After end.")
 }
 
