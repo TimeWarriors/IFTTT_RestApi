@@ -1,15 +1,18 @@
-var Promise = require('promise');
-var fsp = require('fs-promise');
-var nodeSchedule = require('node-schedule');
+"use strict";
 
+let Promise = require('promise');
+let fsp = require('fs-promise');
+let nodeSchedule = require('node-schedule');
+
+let queueTime = 30;
 
 function queueHandler(fileName, io){
   this.queue = [];
   this.io = io;
   this.updateTimer = undefined;
   this.fileName = fileName;
-  
-  var self = this;
+
+  let self = this;
   //is called everytime an event happens to the array
   Array.observe(this.queue, function(changes){
       self.handelQueue(changes);
@@ -26,29 +29,31 @@ queueHandler.prototype.AddToQueue = function(user){
 //PARAM: changes - an array obj contaning data from changes in the queue array
 queueHandler.prototype.handelQueue = function(changes){
     //reference required to the queue
-    var self = this;
+    let self = this;
 
-    //private function
-    var UpdatePresence = function(){
-        var userQueue = self.queue;
+    //private function that writes in the json file
+    let UpdatePresence = function(){
+        let userQueue = self.queue;
 
         fsp.readFile(self.fileName, {encoding:'utf8'}).then((contents) => {
           return new Promise((resolve, reject)=>{
-            var parsedContent = JSON.parse(contents);
+            let parsedContent = JSON.parse(contents);
 
-            var content = [];
+            let content = [];
 
-            for (var j = 0; j < userQueue.length; j++){
+            for (let j = 0; j < userQueue.length; j++){
 
-              for (var i = 0; i < parsedContent.length; i++){
+              for (let i = 0; i < parsedContent.length; i++){
 
                 if(parsedContent[i].userId === userQueue[j].id){
 
                   if(userQueue[j].presence === "false"){
                     parsedContent[i].public_data.presence = false;
+                    parsedContent[i].public_data.city = "";
                   }
                   else if(userQueue[j].presence === "true"){
                     parsedContent[i].public_data.presence = true;
+                    parsedContent[i].public_data.city = userQueue[j].location;
                   }
                   content.push(parsedContent[i].public_data);
                 }
@@ -57,7 +62,7 @@ queueHandler.prototype.handelQueue = function(changes){
             return resolve({fileContent : parsedContent, public_content: content});
           })
         }).then((data)=>{
-          var content = data.public_content;
+          let content = data.public_content;
 
           fsp.writeFile(self.fileName, JSON.stringify(data.fileContent)).then(() =>{
             self.io.emit('statusUpdated', content);
@@ -73,12 +78,13 @@ queueHandler.prototype.handelQueue = function(changes){
 
     //checks the updates to the queue array and inititaes a timer if someone was just added to the queue and there is no current timer
     if(changes[0].removed.length <= 0 && this.updateTimer === undefined){
-      var date = new Date();
-      updateTimer = nodeSchedule.scheduleJob(new Date(date.getFullYear(), date.getMonth(),
-                                                      date.getDate(), date.getHours(),
-                                                      date.getMinutes(), date.getSeconds() + 30), function(){
-        updateTimer = undefined;
-        UpdatePresence();
+
+          let date = new Date();
+          self.updateTimer = nodeSchedule.scheduleJob(new Date(date.getFullYear(), date.getMonth(),
+                                                          date.getDate(), date.getHours(),
+                                                          date.getMinutes(), date.getSeconds() + queueTime), function(){
+          self.updateTimer = undefined;
+          UpdatePresence();
       });
     }
 }

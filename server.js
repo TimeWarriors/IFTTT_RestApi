@@ -1,20 +1,22 @@
-var express = require('express');
-var bodyParser = require('body-parser');
-var app = express();
-var fsp = require("fs-promise");
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
+"use strict";
 
-var fileName = "usersettings.json";
+let express = require('express');
+let bodyParser = require('body-parser');
+let app = express();
+let fsp = require("fs-promise");
+let http = require('http').Server(app);
+let io = require('socket.io')(http);
+let scheduleHandler = require('./scheduleHandler.js');
+let queueHandler = require('./queueHandler.js');
 
-var scheduleHandler = require('./scheduleHandler.js');
-var queueHandler = require('./queueHandler.js');
+let fileName = "usersettings.json";
 
-var queue = [];
-var updateTimer = undefined;
+let sH = new scheduleHandler(fileName, io);
+let queue = new queueHandler(fileName, io);
 
-var sH = new scheduleHandler(fileName, io);
-var queue = new queueHandler(fileName, io);
+//to remove string dependencies in my test code I have these set as varibles
+let updateSuccessMessage = "Presence updated.";
+let updateFailMessage = "Presence update failed.";
 
 app.use(bodyParser.json());
 app.use(express.static(__dirname + "/client"))
@@ -29,12 +31,12 @@ app.get('/', function(req, res){
 
 //returns public data from all registerd user in usersettings.json
 app.get("/userData", function(req, res){
-	var data = [];
+	let data = [];
 
 	fsp.readFile(fileName, {encoding:'utf8'}).then((contents) =>{
-		var parsedContent = JSON.parse(contents);
+		let parsedContent = JSON.parse(contents);
 
-		for(var i = 0; i < parsedContent.length; i++){
+		for(let i = 0; i < parsedContent.length; i++){
 			data.push(parsedContent[i].public_data);
 		}
 
@@ -43,37 +45,54 @@ app.get("/userData", function(req, res){
 })
 
 //If the given id parameter is valid the user is added to the queue
-app.post('/update/:id/:presence', function(req, res){
+//PARAMS:
+//				:id - a registerd user id.
+//				:city - city of their current location
+//				:presence - boolean, should be true if the user enters the area, false if the user leaves the area.
+app.post('/update/:id/:city/:presence', function(req, res){
 
 	//NOTE: since presence is sent as param it is a string and not a booelean.
-	var user = {
+	let user = {
 		id: req.params.id,
-		presence: req.params.presence
+		presence: req.params.presence,
+		location: req.params.city
 	};
 
 	fsp.readFile(fileName, {encoding:'utf8'}).then((contents) =>{
-		var parsedContent = JSON.parse(contents);
+		let parsedContent = JSON.parse(contents);
 
-		for(var i = 0; i < parsedContent.length; i++){
+		for(let i = 0; i < parsedContent.length; i++){
 			if(parsedContent[i].userId === user.id){
 				//if it's a registerd userId then it will be added to the queue for chaning the presence.
 				queue.AddToQueue(user);
-				break;
+				res.send(updateSuccessMessage);
+				req.end();
 			}
 		}
+
+		//If the loop never entered the if statement in the loop and ended the request,
+		//the update failed since no one was added to the queue.
+		res.send(updateFailMessage)
+		req.end();
 	});
-	res.send("Presence Updated");
+
 
 });
 
+
 //Section: MOCHA TEST
+let server;
+exports.updateSuccessMessage = updateSuccessMessage;
+exports.updateFailMessage = updateFailMessage;
+
 exports.listen = function(port){
-	app.listen(process.env.PORT || port, process.env.IP);
+	server = app.listen(process.env.PORT || port, process.env.IP);
 }
 
 exports.close = function(){
  	//Section: server.close();
+	server.close();
 }
 //MOCHA TEST END
 
-app.listen(process.env.PORT || 3000, process.env.IP);
+http.listen(process.env.PORT || 3000, process.env.IP);

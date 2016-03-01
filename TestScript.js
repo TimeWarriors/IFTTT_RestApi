@@ -1,18 +1,20 @@
-var http = require('http');
-var fsp = require('fs-promise');
+"use strict";
 
-var testID = "1234";
-var testValue;
+let http = require('http');
+let fsp = require('fs-promise');
+
+let testID = "1234";
+let testValue;
 
 
 //test script for the app.post
-var testRun = function(){
+let testRun = function(){
 
 	fsp.readFile("usersettings.json", {encoding:'utf8'}).then((contents) =>{
-		var parsedContent = JSON.parse(contents);
-		var data = null;
+		let parsedContent = JSON.parse(contents);
+		let data = null;
 
-		for(var i = 0; i < parsedContent.length; i++){
+		for(let i = 0; i < parsedContent.length; i++){
 			if(parsedContent[i].userId === testID){
 				data = parsedContent[i];
 				break;
@@ -30,41 +32,15 @@ var testRun = function(){
 
 		console.log("options initated.");
 
-		var options = {
+		let options = {
 			host: "localhost",
-			path: "/update/"+testID+"/"+testValue,
+			path: "/update/"+testID+"/Kalmar/"+testValue,
 			method: 'POST',
 			port: '3000'
 		};
 
-		var req = http.request(options, function(res){
+		let req = http.request(options, function(res){
 			console.log("Status code for test call = " + res.statusCode);
-
-			fsp.readFile("../settings/usersettings.json", {encoding:'utf8'}).then((contents) =>{
-				var parsedContent = JSON.parse(contents);
-				var data = null;
-
-				for(var i = 0; i < parsedContent.length; i++){
-					if(parsedContent[i].userId === testID){
-						data = parsedContent[i];
-						break;
-					}
-
-				}
-
-				if(data === null){
-					console.log("Test user with id 1234 was not found. TEST FAILED.")
-				}
-				else if(data.public_data.presence){
-					console.log("Data was successfully changed. TEST SUCCESSFUL.")
-					console.log("Test Complete.")
-				}
-				else {
-					console.log("Data was not successfully changed. TEST FAILED.")
-				}
-
-
-			});
 		})
 
 		req.end();
@@ -75,12 +51,12 @@ var testRun = function(){
 
 
 
-var testBody = function(){
+let testBody = function(){
 
-	var postData = JSON.stringify({
+	let postData = JSON.stringify({
 		msg: 'Hello worldu.'
 	})
-	var options = {
+	let options = {
 			host: "localhost",
 			path: "/test",
 			method: 'POST',
@@ -90,7 +66,7 @@ var testBody = function(){
 			}
 		};
 
-		var req = http.request(options);
+		let req = http.request(options);
 
 		req.write(postData)
 	   	req.end();
