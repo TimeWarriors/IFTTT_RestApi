@@ -29,27 +29,35 @@ function updatePresence(){
             teachDiv.className = "teachResPresent";
             let textDiv = document.createElement("div");
             textDiv.className = "teachTextPresent";
-            let roomName = document.createElement("div");
-            roomName.className = "roomName";
-            let textRoom = document.createElement("p");
-            textRoom.className = "textRoom";
-            textRoom = data[i].inRoom;
             
+           
+            let roomDiv = document.createElement("div");
+            roomDiv.className = "roomTextDiv";
+            let textRoom = document.createElement("p");
+            textRoom.className = "roomText";
+            let room = data[i].inRoom;
+            textRoom.textContent = room;
+       
             img.src = data[i].img;
             dataDiv.appendChild(teachDiv);
             teachDiv.appendChild(img);
-            roomName.appendChild(textRoom);
-            teachDiv.appendChild(roomName);
             teachDiv.appendChild(textDiv);
+            teachDiv.appendChild(roomDiv);
             textDiv.appendChild(textName)
+            roomDiv.appendChild(textRoom);
+            
             
             if(data[i].presence == true){
                 teachDiv.className = "teachResPresent";
             }
-            else{
-                teachDiv.className = "teachResNotPresent";
+            // if(data[i].presence == true){
+            //     teachDiv.className = "teachResBusyPresent";
+                
+            // }
+            if(data[i].presence == false){
+                teachDiv.className = "teachResNotPresent";  
             }
-            
+             
         };
       
 	});
