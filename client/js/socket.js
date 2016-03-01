@@ -6,11 +6,9 @@ var socket = io();
     var teachRes = document.getElementById(userData.name);
     
     if(userData.presence == true){
-        // teachRes.style.backgroundColor = "#ADFF2F";
-            teachRes.className = "teachResPresent";
+                teachRes.className = "teachResPresent";
             }
             else{
-                // teachRes.style.backgroundColor = "#B22222";
                 teachRes.className = "teachResNotPresent";
             }
 })
