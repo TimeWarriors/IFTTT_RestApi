@@ -23,7 +23,7 @@ Array.observe(queue, function(changes){
 		var date = new Date();
 		updateTimer = nodeSchedule.scheduleJob(new Date(date.getFullYear(), date.getMonth(), 
 														date.getDate(), date.getHours(), 
-														date.getMinutes(), date.getSeconds() + 30), function(){
+														date.getMinutes(), date.getSeconds() + 10), function(){
 			updateTimer = undefined;
 			UpdatePresence(queue);
 		});
@@ -154,7 +154,7 @@ app.post('/busy', function(req, res){
 });
 
 
-app.listen(3000, function(){
+http.listen(3000, function(){
 	//test stuff here
 	console.log("listening on port 3000");
 });
