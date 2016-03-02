@@ -21,12 +21,11 @@ scheduleHandler.prototype.InitiateTimers = function(){
 	let rule = new nodeSchedule.RecurrenceRule();
 
 	rule.hour = 5;
-	rule.second = 30;
+	//rule.second = 30;
 
 	let that = this;
 
 	nodeSchedule.scheduleJob(rule, function(){
-		console.log("Scheduling job.");
 		fsp.readFile(that.fileName, {encoding:'utf8'}).then((data) =>{
 
 			return new Promise((resolve, reject) =>{
@@ -40,7 +39,6 @@ scheduleHandler.prototype.InitiateTimers = function(){
 				let BookedUsers = [];
 				let expectedIndex = parsedData.length;
 				for(let i = 0; i < parsedData.length; i++){
-					//console.log(i);
 					that.getUserSchedule(parsedData[i]).then((userData)=>{
 						//if a user has bookings then they are added to the array
 						if(userData.bookingData.length > 0){
@@ -60,8 +58,7 @@ scheduleHandler.prototype.InitiateTimers = function(){
 
 			});
 		}).then((bookedUsers) =>{
-			//console.log(bookedUsers)
-			//console.log(bookedUsers[0].bookingData)
+
 			let EventTimes = [];
 			let Events = [];
 
@@ -116,6 +113,7 @@ scheduleHandler.prototype.InitiateTimers = function(){
 	});
 }
 
+//returns a Promise that will give the schedule of a user, If the user is not found it will log an error
 scheduleHandler.prototype.getUserSchedule = function(user){
 
 	return new Promise((resolve, reject) => {
@@ -130,7 +128,7 @@ scheduleHandler.prototype.getUserSchedule = function(user){
 				for(let j = 0; j < schedule.length; j++){
 				data.push({startTime: schedule[j].booking.time.startTime,
 						  endTime: schedule[j].booking.time.endTime,
-						 lectureRoom: schedule[j].booking.columns[2] || "Not specified."
+						 	lectureRoom: schedule[j].booking.columns[2] || "Not specified."
 					 	})
 				}
 			}
@@ -139,10 +137,10 @@ scheduleHandler.prototype.getUserSchedule = function(user){
 
 			return resolve(user);
 
-		}).catch((err)=>{
-			console.log("Error occured during the process of getting the schedule.");
-			console.log(err);
-		})
+		}).catch(function(e){
+			console.log("Error :" + e);
+			reject(e);
+		});
 	});
 }
 
@@ -171,7 +169,6 @@ scheduleHandler.prototype.scheduleEvents = function(scheduledEvents, fileName){
 		//initates a scheduled job and sends all the data scheduled for that time.
 		nodeSchedule.scheduleJob(new Date(date.getFullYear(), date.getMonth(), date.getDate(), hour, minute, 0), function(self, scheduledEvents){
 
-			console.log(scheduledEvents);
 			fsp.readFile(fileName, {encoding:'utf8'}).then((contents) => {
 				let parsedContents = JSON.parse(contents);
 				let content = [];

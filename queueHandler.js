@@ -77,7 +77,7 @@ queueHandler.prototype.handelQueue = function(changes){
 
 
     //checks the updates to the queue array and inititaes a timer if someone was just added to the queue and there is no current timer
-    if(changes[0].removed.length <= 0 && this.updateTimer === undefined){
+    if(changes[0].addedCount > 0 && this.updateTimer === undefined){
 
           let date = new Date();
           self.updateTimer = nodeSchedule.scheduleJob(new Date(date.getFullYear(), date.getMonth(),
@@ -85,8 +85,12 @@ queueHandler.prototype.handelQueue = function(changes){
                                                           date.getMinutes(), date.getSeconds() + queueTime), function(){
           self.updateTimer = undefined;
           UpdatePresence();
+
       });
+      return true;
     }
+    return false;
 }
+
 
 module.exports = queueHandler;
