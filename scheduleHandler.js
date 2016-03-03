@@ -21,8 +21,8 @@ scheduleHandler.prototype.InitiateTimers = function(){
 
 	let rule = new nodeSchedule.RecurrenceRule();
 
-	//rule.hour = 5;
-	rule.second = 30;
+	rule.hour = 5;
+	//rule.second = 30;
 
 	let that = this;
 
@@ -196,7 +196,7 @@ scheduleHandler.prototype.scheduleEvents = function(scheduledEvents, fileName){
 				}
 
 				fsp.writeFile(fileName, JSON.stringify(parsedContents)).then(() => {
-					io.emit('busyStatusUpdated', content);
+					io.emit('statusUpdated', content);
 				});
 			});
 

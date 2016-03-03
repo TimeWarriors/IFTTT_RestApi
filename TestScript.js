@@ -74,4 +74,29 @@ let testBody = function(){
 		//console.log("After end.")
 }
 
-testRun();
+
+let testGotInLecture = function(io){
+
+
+	fsp.readFile("usersettings.json", {encoding:'utf8'}).then((contents) =>{
+			let content = [];
+			let parsedContent = JSON.parse(contents);
+
+			for (let i = 0; i < parsedContent.length; i++){
+				if(parsedContent[i].public_data.inRoom === ""){
+					parsedContent[i].public_data.inRoom = "Ny106k, Ny107k, Ny108k";
+				}
+				else {
+					parsedContent[i].public_data.inRoom = "";
+				}
+				content.push(parsedContent[i].public_data);
+			}
+
+			io.emit('statusUpdated', content);
+	});
+
+
+}
+
+
+module.exports.testGotInLecture = testGotInLecture;
