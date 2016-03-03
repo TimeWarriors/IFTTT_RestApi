@@ -18,16 +18,16 @@ function scheduleHandler(fileName, io){
 //TODO: Reset all users presence status at a certain time
 //creates a daily event that will inturn create events whenever a registerd user is busy on their timeedit schedule
 scheduleHandler.prototype.InitiateTimers = function(){
+
 	let rule = new nodeSchedule.RecurrenceRule();
 
-	rule.hour = 5;
-	//rule.second = 30;
+	//rule.hour = 5;
+	rule.second = 30;
 
 	let that = this;
 
 	nodeSchedule.scheduleJob(rule, function(){
 		fsp.readFile(that.fileName, {encoding:'utf8'}).then((data) =>{
-
 			return new Promise((resolve, reject) =>{
 
 				let parsedData = JSON.parse(data);
@@ -39,8 +39,14 @@ scheduleHandler.prototype.InitiateTimers = function(){
 				let BookedUsers = [];
 				let expectedIndex = parsedData.length;
 				for(let i = 0; i < parsedData.length; i++){
+
+					//Daily reset for the presence status for all registerd users
+					parsedData[i].public_data.presence = false;
+					//
+
+					//Gets user schedule
 					that.getUserSchedule(parsedData[i]).then((userData)=>{
-						//if a user has bookings then they are added to the array
+						//if a user has any booking data they are added to an array for users with bookings.
 						if(userData.bookingData.length > 0){
 							BookedUsers.push(userData);
 						}
@@ -62,6 +68,10 @@ scheduleHandler.prototype.InitiateTimers = function(){
 			let EventTimes = [];
 			let Events = [];
 
+
+			//Creates 2 arrays,
+			//one contaning all of the times for any scheduled events
+			//the other one contains the data for those events
 			for(let i = 0; i < bookedUsers.length; i ++){
 
 				for(let j = 0; j < bookedUsers[i].bookingData.length; j++){
