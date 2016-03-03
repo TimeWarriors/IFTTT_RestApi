@@ -30,24 +30,34 @@ function updatePresence(){
             let textDiv = document.createElement("div");
             textDiv.className = "teachTextPresent";
             
-            
+           
+            let roomDiv = document.createElement("div");
+            roomDiv.className = "roomTextDiv";
+            let textRoom = document.createElement("p");
+            textRoom.className = "roomText";
+            let room = data[i].inRoom;
+            textRoom.textContent = room;
+       
             img.src = data[i].img;
             dataDiv.appendChild(teachDiv);
             teachDiv.appendChild(img);
             teachDiv.appendChild(textDiv);
+            teachDiv.appendChild(roomDiv);
             textDiv.appendChild(textName)
+            roomDiv.appendChild(textRoom);
+            
             
             if(data[i].presence == true){
-                
-                // teachRes.style.backgroundColor = "#ADFF2F";
-            teachDiv.className = "teachResPresent";
+                teachDiv.className = "teachResPresent";
             }
-            else{
-                // teachRes.style.backgroundColor = "#B22222";
-                teachDiv.className = "teachResNotPresent";
+            // if(data[i].presence == true){
+            //     teachDiv.className = "teachResBusyPresent";
                 
+            // }
+            if(data[i].presence == false){
+                teachDiv.className = "teachResNotPresent";  
             }
-            
+             
         };
       
 	});
