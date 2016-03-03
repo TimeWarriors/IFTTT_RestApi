@@ -22,7 +22,6 @@ body {
     box-shadow: 0 0 40px 5px rgba(0, 255, 0, 1);
     width: 250px;
     padding-top: 18px;
-    padding-bottom: 18px;
     animation: pulseGreen 4s ease-in-out infinite;
 }
 
@@ -78,7 +77,7 @@ body {
     width: 250px;
     padding-top: 18px;
     -webkit-filter: brightness(0.65);
-        padding-bottom: 18px;
+    padding-top: 18px;
     /*animation: pulseRed 8s ease-in-out infinite;*/
     /*opacity:0.5;*/
 }
