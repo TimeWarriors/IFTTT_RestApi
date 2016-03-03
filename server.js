@@ -95,4 +95,14 @@ exports.close = function(){
 }
 //MOCHA TEST END
 
+<<<<<<< HEAD
+//http.listen(process.env.PORT || 3000, process.env.IP);
+//TEST
+let test = require('./TestScript.js')
+http.listen(3000, function(){
+		test.testGotInLecture(io);
+});
+//---
+=======
 http.listen(process.env.PORT || 3000, process.env.IP);
+>>>>>>> master
