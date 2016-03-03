@@ -17,6 +17,17 @@ const TimeEditDataParser = class {
         return dataIds.length > 0 ? dataIds : dataIds[0];
     }
 
+    getTypes(html){
+        let $ = this._loadHtml(html);
+        let types = $('#fancytypeselector option').map((i, elem) => {
+            return {
+                name: $(elem).text(),
+                value: $(elem).val()
+            };
+        }).get();
+        return types;
+    }
+
     /**
      * [sorts schedule infromation]
      * @param  {[object]} object [cherio html object]
