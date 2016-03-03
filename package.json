@@ -1,5 +1,5 @@
 {
-  "name": "IFTTT rest API",
+  "name": "IFTTT_rest_API",
   "version": "1.0.0",
   "description": "rest api for blink lamps to our project",
   "main": "server.js",
