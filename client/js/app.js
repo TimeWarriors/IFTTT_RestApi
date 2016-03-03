@@ -48,7 +48,11 @@ function updatePresence(){
             
             
             if(data[i].presence == true){
-                teachDiv.className = "teachResPresent";
+                if (data[i].city == "Kalmar") {
+                    teachDiv.className = "teachResPresent";
+                } else {
+                    teachDiv.className = "teachResVaxjo";
+                }
             }
             // if(data[i].presence == true){
             //     teachDiv.className = "teachResBusyPresent";
