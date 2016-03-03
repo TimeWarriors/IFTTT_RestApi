@@ -60,5 +60,6 @@ cityForTrigger - this you replace with the city you are creating the trigger for
 
 Press Create Action
 
-111. Now you can give the recipie a title, suggestions are : "LNU-IFTTT-Kalmar/Växjö" or "LNU-PresenceApp-Kalmar/Växjö". You can also just leave it be.
-112. Press Create Recipe and you are done!
+Now you can give the recipie a title, suggestions are : "LNU-IFTTT-Kalmar/Växjö" or "LNU-PresenceApp-Kalmar/Växjö". You can also just leave it be.
+
+Press Create Recipe and you are done!
