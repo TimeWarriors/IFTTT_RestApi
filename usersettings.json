@@ -13,7 +13,7 @@
         "name": "John_Häggerud",
         "presence": false,
         "city": "Kalmar",
-        "inRoom": "Not specified.",
+        "inRoom": "",
         "img": "https://avatars0.githubusercontent.com/u/662181?v=3&s=460"
     }
 }]
