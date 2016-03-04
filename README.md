@@ -60,6 +60,6 @@ cityForTrigger - this you replace with the city you are creating the trigger for
 
 Press Create Action
 
-Now you can give the recipie a title, suggestions are : "LNU-IFTTT-Kalmar/Växjö" or "LNU-PresenceApp-Kalmar/Växjö". You can also just leave it be.
+Now you can give the recipe a title, suggestions are : "LNU-IFTTT-Kalmar/Växjö" or "LNU-PresenceApp-Kalmar/Växjö". You can also just leave it be.
 
-Press Create Recipe and you are done!
+Press Create Recipe. All you need to do now is to download the IFTTT app on your mobile device and set the recipe running.

@@ -96,7 +96,7 @@ scheduleHandler.prototype.InitiateTimers = function(){
 					Events.push({
 								time: bookedUsers[i].bookingData[j].endTime,
 								id: bookedUsers[i].userId,
-								lectureRoom: ""
+								lectureRoom: "—"
 							});
 				}
 			}
@@ -138,7 +138,7 @@ scheduleHandler.prototype.getUserSchedule = function(user){
 				for(let j = 0; j < schedule.length; j++){
 				data.push({startTime: schedule[j].booking.time.startTime,
 						  endTime: schedule[j].booking.time.endTime,
-						 	lectureRoom: schedule[j].booking.columns[2] || "Not specified."
+						 	lectureRoom: schedule[j].booking.columns[2] || "—"
 					 	})
 				}
 			}
