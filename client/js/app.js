@@ -33,8 +33,10 @@ function updatePresence(){
            
             let roomDiv = document.createElement("div");
             roomDiv.className = "roomTextDiv";
+            roomDiv.id = "roomTextDiv"
             let textRoom = document.createElement("p");
             textRoom.className = "roomText";
+            textRoom.id = "roomText";
             let room = data[i].inRoom;
             textRoom.textContent = room;
        
