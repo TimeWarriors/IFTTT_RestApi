@@ -10,12 +10,12 @@ socket.on('statusUpdated', (userData) => {
             } else {
                 teachRes.className = "teachResVaxjo";
             }
-            teachRes.childNodes[2].firstChild.innerHTML = userData[i].inRoom;
+            teachRes.querySelector('.roomText').innerHTML = userData[i].inRoom;
             //teachRes.className = "teachResPresent";
         } else {
             // teachRes.style.backgroundColor = "#B22222";
             teachRes.className = "teachResNotPresent";
-            teachRes.childNodes[2].firstChild.innerHTML = userData[i].inRoom;
+            teachRes.querySelector('.roomText').innerHTML = userData[i].inRoom;
         }
     }
 })
