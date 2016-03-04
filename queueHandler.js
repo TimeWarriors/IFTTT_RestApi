@@ -49,7 +49,7 @@ queueHandler.prototype.handelQueue = function(changes){
 
                   if(userQueue[j].presence === "false"){
                     parsedContent[i].public_data.presence = false;
-                    parsedContent[i].public_data.city = "";
+                    parsedContent[i].inRoom = "";
                   }
                   else if(userQueue[j].presence === "true"){
                     parsedContent[i].public_data.presence = true;
@@ -85,7 +85,6 @@ queueHandler.prototype.handelQueue = function(changes){
                                                           date.getMinutes(), date.getSeconds() + queueTime), function(){
           self.updateTimer = undefined;
           UpdatePresence();
-
       });
       return true;
     }
