@@ -1,25 +1,28 @@
-var http = require('http');
-var fsp = require('fs-promise');
+"use strict";
 
-var testID = "1234";
-var testValue;
+let http = require('http');
+let fsp = require('fs-promise');
+
+let testID = "1234";
+let testValue;
 
 
 //test script for the app.post
-var testRun = function(){
+//It simulates a call that would be made from IFTTT
+let testRun = function(){
 
 	fsp.readFile("usersettings.json", {encoding:'utf8'}).then((contents) =>{
-		var parsedContent = JSON.parse(contents);
-		var data = null;
-					
-		for(var i = 0; i < parsedContent.length; i++){
-			if(parsedContent[i].userId === testID){							
+		let parsedContent = JSON.parse(contents);
+		let data = null;
+
+		for(let i = 0; i < parsedContent.length; i++){
+			if(parsedContent[i].userId === testID){
 				data = parsedContent[i];
 				break;
 			}
 
 		}
-		
+
 		//set the test value to the opposite so it will allways change the value
 		if(data.public_data.presence){
 			testValue = false;
@@ -27,75 +30,48 @@ var testRun = function(){
 		else {
 			testValue = true;
 		}
-			
+
 		console.log("options initated.");
-		
-		var options = {
+
+		let options = {
 			host: "localhost",
-			path: "/update/"+testID+"/"+testValue,
+			path: "/update/"+testID+"/Kalmar/"+testValue,
 			method: 'POST',
 			port: '3000'
 		};
-		
-		var req = http.request(options, function(res){
-			//console.log("Status code for test call = " + res.statusCode);	
 
-			/*fsp.readFile("../settings/usersettings.json", {encoding:'utf8'}).then((contents) =>{
-				var parsedContent = JSON.parse(contents);
-				var data = null;
-
-				for(var i = 0; i < parsedContent.length; i++){
-					if(parsedContent[i].userId === testID){							
-						data = parsedContent[i];
-						break;
-					}
-
-				}
-
-				if(data === null){
-					console.log("Test user with id 1234 was not found. TEST FAILED.")
-				}
-				else if(data.public_data.presence){
-					console.log("Data was successfully changed. TEST SUCCESSFUL.")
-					console.log("Test Complete.")
-				}
-				else {
-					console.log("Data was not successfully changed. TEST FAILED.")
-				}
-
-
-			});*/
+		let req = http.request(options, function(res){
+			console.log("Status code for test call = " + res.statusCode);
 		})
 
-		req.end();	
-		
-			  
-	});		
+		req.end();
+
+
+	});
 }
 
 
 
-var testBody = function(){
-	
-	var postData = JSON.stringify({
+let testBody = function(){
+
+	let postData = JSON.stringify({
 		msg: 'Hello worldu.'
 	})
-	var options = {
+	let options = {
 			host: "localhost",
 			path: "/test",
 			method: 'POST',
 			port: '3000',
 			headers: {
-				'Content-Type': 'application/json',
-				'Content-Length': postData.length
+				'Content-Type': 'application/json'
 			}
 		};
 
-		var req = http.request(options);				   
-				
+		let req = http.request(options);
+
 		req.write(postData)
 	   	req.end();
-	
+
 		//console.log("After end.")
 }
 

@@ -33,8 +33,10 @@ function updatePresence(){
            
             let roomDiv = document.createElement("div");
             roomDiv.className = "roomTextDiv";
+            roomDiv.id = "roomTextDiv"
             let textRoom = document.createElement("p");
             textRoom.className = "roomText";
+            textRoom.id = "roomText";
             let room = data[i].inRoom;
             textRoom.textContent = room;
        
@@ -48,7 +50,11 @@ function updatePresence(){
             
             
             if(data[i].presence == true){
-                teachDiv.className = "teachResPresent";
+                if (data[i].city == "Kalmar") {
+                    teachDiv.className = "teachResPresent";
+                } else {
+                    teachDiv.className = "teachResVaxjo";
+                }
             }
             // if(data[i].presence == true){
             //     teachDiv.className = "teachResBusyPresent";
