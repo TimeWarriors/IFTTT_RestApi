@@ -20,15 +20,15 @@ function updatePresence(){
         
         for (var i = 0; i < data.length; i++){
             let img = document.createElement("img");
-            img.className = "teachImgPresent";
+            img.className = "presentationImage";
             let textName = document.createElement("p");
             let name = data[i].name;
             textName.textContent = name.split("_").join(" ");
             let teachDiv = document.createElement("div");
             teachDiv.id = name;
-            teachDiv.className = "teachResPresent";
+            teachDiv.className = "teacherName";
             let textDiv = document.createElement("div");
-            textDiv.className = "teachTextPresent";
+            textDiv.className = "teacherTextPresent";
             
            
             let roomDiv = document.createElement("div");
@@ -49,11 +49,16 @@ function updatePresence(){
             roomDiv.appendChild(textRoom);
             
             
+            
+           
+            
+            
+            
             if(data[i].presence == true){
                 if (data[i].city == "Kalmar") {
-                    teachDiv.className = "teachResPresent";
+                    teachDiv.className = "teacherName";
                 } else {
-                    teachDiv.className = "teachResVaxjo";
+                    teachDiv.className = "teacherNameVaxjo";
                 }
             }
             // if(data[i].presence == true){
@@ -61,7 +66,7 @@ function updatePresence(){
                 
             // }
             if(data[i].presence == false){
-                teachDiv.className = "teachResNotPresent";  
+                teachDiv.className = "teacherNameNotPrescent";  
             }
              
         };

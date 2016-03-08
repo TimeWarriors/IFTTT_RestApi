@@ -6,15 +6,15 @@ socket.on('statusUpdated', (userData) => {
         if (userData[i].presence === true) {
             // teachRes.style.backgroundColor = "#ADFF2F";         
             if (userData[i].city == "Kalmar") {
-                teachRes.className = "teachResPresent";
+                teachRes.className = "teacherName";
             } else {
-                teachRes.className = "teachResVaxjo";
+                teachRes.className = "teacherNameVaxjo";
             }
             teachRes.querySelector('.roomText').innerHTML = userData[i].inRoom;
             //teachRes.className = "teachResPresent";
         } else {
             // teachRes.style.backgroundColor = "#B22222";
-            teachRes.className = "teachResNotPresent";
+            teachRes.className = "teacherNameNotPrescent";
             teachRes.querySelector('.roomText').innerHTML = userData[i].inRoom;
         }
     }
