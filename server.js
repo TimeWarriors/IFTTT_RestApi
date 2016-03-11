@@ -94,11 +94,11 @@ app.post('/testRooms', function(req, res){
 				let data = [];
 
 				for(let i = 0; i < parsedContent.length; i ++){
-						if(parsedContent[i].public_data.inRoom !== ""){
+						if(parsedContent[i].public_data.inRoom === "—" || parsedContent[i].public_data.inRoom === ""){
 							parsedContent[i].public_data.inRoom = "Ny106k, Ny107k, Ny108k";
 						}
 						else {
-							parsedContent[i].public_data.inRoom = "";
+							parsedContent[i].public_data.inRoom = "—";
 						}
 						data.push(parsedContent[i].public_data);
 				}

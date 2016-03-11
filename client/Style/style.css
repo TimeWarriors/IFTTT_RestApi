@@ -1,65 +1,121 @@
+html{
+    height:100%;
+}
 body {
     background-color: white;
-    background-image: url("bg2.png")
+    background-image: url("bg2.png");
+    height:100%;
+    max-height: 100%;
+    overflow: hidden;
 }
-
 .lnuLogo {
-    height: 115px;
+    height: 2%;
     position: absolute;
-    right: 25px;
-    bottom: 25px;
+    right: 1%;
+    bottom: 0.5%;
     border-radius: 5px;
     display: block;
-    box-shadow: 0 0 15px 5px rgba(255, 255, 0, 1);
+    box-shadow: 0 0 5px 2px rgba(255, 255, 0, 1);
 }
-
-.teachResPresent {
+#info-container{
+    position: absolute;
+    display: block;
+    bottom:-30%;
+    left:1%;
+    height:32%;
+    width: 40%;
+}
+#info-container span{
+    float:left;
+    font-size:24px;
+    color:lightgray;
+}
+#yellowBlob{
+    float:left;
+    height: 5%;
+    width: 7%;
+    background-color: yellow;
+    border-radius: 50%;
+}
+#redBlob{
+    float:left;
+    height: 5%;
+    width: 7%;
+    background-color: red;
+    border-radius: 50%;
+}
+#greenBlob{
+    float:left;
+    height: 5%;
+    width: 7%;
+    background-color: limegreen;
+    border-radius: 50%;
+}
+#dataDiv{
+    height: 90%;
+    width:90%;
+    margin:0 auto;
+    
+}
+#dataDiv .teachResPresent, #dataDiv .teachResVaxjo, #dataDiv .teachResNotPresent {
+    width:21%;
+    padding-top: 0.75%;
+    padding-bottom: 0.75%;
     border-radius: 5px;
     background-color: #F6F6F6;
-    margin-top: 25px;
-    margin: 25px;
+    /*    margin-top: 25px;*/
+    
+    margin:2%;
     float: left;
-    box-shadow: 0 0 40px 5px rgba(0, 255, 0, 1);
-    width: 250px;
-    padding-top: 18px;
+    display:inline-block;
+}
+
+
+.teachResPresent {
+
+    box-shadow: 0 0 35px 5px rgba(0, 255, 0, 1);
     animation: pulseGreen 4s ease-in-out infinite;
+
+}
+
+
+.teachResVaxjo {
+
+    box-shadow: 0 0 35px 5px rgba(255, 255, 0, 1);
+    animation: pulseYellow 4s ease-in-out infinite;
+}
+
+.teachResNotPresent {
+    box-shadow: 0 0 35px 5px rgba(255, 0, 0, 1);
+    -webkit-filter: brightness(0.65);
+    /*animation: pulseRed 8s ease-in-out infinite;*/
+    /*opacity:0.5;*/
 }
 
 @-webkit-keyframes pulseGreen {
     50% {
-        -webkit-box-shadow: 0 0 40px 5px rgba(0, 200, 0, 0.8);
+        -webkit-box-shadow: 0 0 35px 5px rgba(0, 200, 0, 0.8);
         ;
     }
 }
 
 @keyframes pulseGreen {
     50% {
-        box-shadow: 0 0 40px 5px rgba(0, 200, 0, 0.8);
+        box-shadow: 0 0 35px 5px rgba(0, 200, 0, 0.8);
     }
 }
 
-.teachResVaxjo {
-    border-radius: 5px;
-    background-color: #F6F6F6;
-    margin-top: 25px;
-    margin: 25px;
-    float: left;
-    box-shadow: 0 0 40px 5px rgba(255, 255, 0, 1);
-    width: 250px;
-    padding-top: 18px;
-    animation: pulseYellow 4s ease-in-out infinite;
-}
 
 @-webkit-keyframes pulseYellow {
     50% {
-        -webkit-box-shadow: 0 0 40px 5px rgba(200, 200, 0, 0.8);
+        -webkit-box-shadow: 0 0 35px 5px rgba(200, 200, 0, 0.8);
         ;
     }
 }
 
 @keyframes pulseYellow {
     50% {
-        box-shadow: 0 0 40px 5px rgba(200, 200, 0, 0.8);
+        box-shadow: 0 0 35px 5px rgba(200, 200, 0, 0.8);
     }
 }
 
@@ -67,26 +123,11 @@ body {
     float: left;
 }
 
-.teachResNotPresent {
-    border-radius: 5px;
-    background-color: #F6F6F6;
-    margin-top: 25px;
-    margin: 25px;
-    float: left;
-    box-shadow: 0 0 30px 5px rgba(255, 0, 0, 1);
-    width: 250px;
-    padding-top: 18px;
-    -webkit-filter: brightness(0.65);
-    padding-top: 18px;
-    /*animation: pulseRed 8s ease-in-out infinite;*/
-    /*opacity:0.5;*/
-}
-
-.teachResPresent img {
+.teachResVaxjo img, .teachResNotPresent img, .teachResPresent img {
     display: block;
     margin-left: auto;
     margin-right: auto;
-    width: 200px;
+    width: 90%;
     -webkit-box-sizing: content-box;
     -moz-box-sizing: content-box;
     box-sizing: content-box;
@@ -97,47 +138,13 @@ body {
     text-overflow: ellipsis;
     /*-webkit-box-shadow: 0 0 40px 8px rgba(0,255,0,0.5);*/
     /*box-shadow: 0 0 40px 8px rgba(0,255,0,0.5);*/
-}
-
-.teachResVaxjo img {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    width: 200px;
-    -webkit-box-sizing: content-box;
-    -moz-box-sizing: content-box;
-    box-sizing: content-box;
-    border: none;
-    color: rgba(255, 255, 255, 1);
-    text-align: center;
-    -o-text-overflow: ellipsis;
-    text-overflow: ellipsis;
-    /*-webkit-box-shadow: 0 0 40px 8px rgba(0,255,0,0.5);*/
-    /*box-shadow: 0 0 40px 8px rgba(0,255,0,0.5);*/
-}
-
-.teachResNotPresent img {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    width: 200px;
-    -webkit-box-sizing: content-box;
-    -moz-box-sizing: content-box;
-    box-sizing: content-box;
-    border: none;
-    color: rgba(255, 255, 255, 1);
-    text-align: center;
-    -o-text-overflow: ellipsis;
-    text-overflow: ellipsis;
-    /*-webkit-box-shadow: 0 0 40px 8px rgba(255,0,0,0.5);*/
-    /*box-shadow: 0 0 40px 8px rgba(255,0,0,0.5);*/
-    background: black;
 }
 
 .teachTextPresent {
+    margin-top:-8%;
     margin-left: auto;
     margin-right: auto;
-    width: 200px;
+    width: 90%;
     background-color: #E5E5E5;
     display: block;
 }
@@ -145,10 +152,11 @@ body {
 .teachTextPresent p {
     color: #101010;
     font: normal 24px/1 "Trebuchet MS", Helvetica, sans-serif;
+    font-size: 1.8vw;
     -webkit-box-sizing: content-box;
     -moz-box-sizing: content-box;
     box-sizing: content-box;
-    padding: 15px;
+    padding: 3%;
     border: none;
     text-align: center;
     -o-text-overflow: ellipsis;
@@ -162,9 +170,9 @@ body {
     margin-left: auto;
     margin-right: auto;
     background-color: #E5E5E5;
-    display: block;
     text-align: center;
-    width: 200px;
+    width: 90%;
+    margin-top:-8%;
     -webkit-box-sizing: content-box;
     -moz-box-sizing: content-box;
     box-sizing: content-box;
@@ -174,11 +182,13 @@ body {
     text-overflow: ellipsis;
     -webkit-box-shadow: 0 0 6px 2px rgba(0, 0, 0, 0.5) inset;
     box-shadow: 0 0 6px 2px rgba(0, 0, 0, 0.5) inset;
-    
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .roomTextDiv p {
     color: #101010;
     font: normal 18px/1 "Trebuchet MS", Helvetica, sans-serif;
-    padding:4px;
+    font-size:1.2vw;
 }
