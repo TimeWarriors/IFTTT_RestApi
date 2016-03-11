@@ -8,15 +8,21 @@ let timeEditApi = require('timeeditapi');
 
 let timeEdit = new timeEditApi('https://se.timeedit.net/web/lnu/db1/schema1/', 3);
 
-
+/**
+ * constructor for this class which initiates base values and call the InitiateTimers method.
+ * @param  {[string]} fileName [string value for the usersettings file]
+ * @param  {[object]} io       [socket.io object refrence to make socket emits.]
+ */
 function scheduleHandler(fileName, io){
 	this.io = io;
 	this.fileName = fileName;
 	this.InitiateTimers();
 }
 
-//TODO: Reset all users presence status at a certain time
-//creates a daily event that will inturn create events whenever a registerd user is busy on their timeedit schedule
+/**
+ * Creates a timer event that will occur each day at 5 in the morning where the users presence statuses will be reset aswell as the schedules of all
+ * registerd users will be read and events will be created for the times they have on their schedules.
+ */
 scheduleHandler.prototype.InitiateTimers = function(){
 
 	let rule = new nodeSchedule.RecurrenceRule();
@@ -26,8 +32,12 @@ scheduleHandler.prototype.InitiateTimers = function(){
 
 	let that = this;
 
+	//Will run daily at 5 in the morning
 	nodeSchedule.scheduleJob(rule, function(){
+
 		fsp.readFile(that.fileName, {encoding:'utf8'}).then((data) =>{
+			//Promise returns an array with the data for the users aswell
+			//as their booking data.
 			return new Promise((resolve, reject) =>{
 
 				let parsedData = JSON.parse(data);
@@ -123,7 +133,14 @@ scheduleHandler.prototype.InitiateTimers = function(){
 	});
 }
 
-//returns a Promise that will give the schedule of a user, If the user is not found it will log an error
+
+
+/**
+ * returns the given user object with an added value called bookingData that is an
+ * array contaning the data for their bookings for the day.
+ * @param  {[object]} user [object of a user]
+ * @return {[object]}      [object of a user with booking data added]
+ */
 scheduleHandler.prototype.getUserSchedule = function(user){
 
 	return new Promise((resolve, reject) => {
@@ -136,6 +153,7 @@ scheduleHandler.prototype.getUserSchedule = function(user){
 			}
 			else {
 				for(let j = 0; j < schedule.length; j++){
+
 				data.push({startTime: schedule[j].booking.time.startTime,
 						  endTime: schedule[j].booking.time.endTime,
 						 	lectureRoom: schedule[j].booking.columns[2] || "—"
@@ -155,10 +173,11 @@ scheduleHandler.prototype.getUserSchedule = function(user){
 }
 
 
-//Creates events based on the data given in the array
-//PARAMS:
-//				scheduledEvents = array contaning data for scheduled events.
-//				fileName = path to settings file where the data gets changed.
+/**
+ * schedules events based on the given scheduledEvents array param that has a strict setup.
+ * @param  {[array]} scheduledEvents [An array with a strict setup to effectivly create events.]
+ * @param  {[string]} fileName        [string name for the settings file.]
+ */
 scheduleHandler.prototype.scheduleEvents = function(scheduledEvents, fileName){
 	let date = new Date();
 	let hour;
