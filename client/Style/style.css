@@ -9,13 +9,47 @@ body {
     overflow: hidden;
 }
 .lnuLogo {
-    height: 115px;
+    height: 2%;
     position: absolute;
-    right: 25px;
-    bottom: 25px;
+    right: 1%;
+    bottom: 0.5%;
     border-radius: 5px;
     display: block;
-    box-shadow: 0 0 15px 5px rgba(255, 255, 0, 1);
+    box-shadow: 0 0 5px 2px rgba(255, 255, 0, 1);
+}
+#info-container{
+    position: absolute;
+    display: block;
+    bottom:-30%;
+    left:1%;
+    height:32%;
+    width: 40%;
+}
+#info-container span{
+    float:left;
+    font-size:24px;
+    color:lightgray;
+}
+#yellowBlob{
+    float:left;
+    height: 5%;
+    width: 7%;
+    background-color: yellow;
+    border-radius: 50%;
+}
+#redBlob{
+    float:left;
+    height: 5%;
+    width: 7%;
+    background-color: red;
+    border-radius: 50%;
+}
+#greenBlob{
+    float:left;
+    height: 5%;
+    width: 7%;
+    background-color: limegreen;
+    border-radius: 50%;
 }
 #dataDiv{
     height: 90%;
@@ -24,51 +58,36 @@ body {
     
 }
 #dataDiv .teachResPresent, #dataDiv .teachResVaxjo, #dataDiv .teachResNotPresent {
-    width:29%;
+    width:21%;
+    padding-top: 0.75%;
+    padding-bottom: 0.75%;
+    border-radius: 5px;
+    background-color: #F6F6F6;
+    /*    margin-top: 25px;*/
+    
+    margin:2%;
+    float: left;
+    display:inline-block;
 }
 
 
 .teachResPresent {
-    border-radius: 5px;
-    background-color: #F6F6F6;
-/*    margin-top: 25px;*/
-    margin: 2%;
-    float: left;
+
     box-shadow: 0 0 35px 5px rgba(0, 255, 0, 1);
-/*    width: 29%;*/
-    padding-top: 2%;
-    padding-bottom: 2%;
     animation: pulseGreen 4s ease-in-out infinite;
-    display:inline-block;
+
 }
 
 
 .teachResVaxjo {
-    border-radius: 5px;
-    background-color: #F6F6F6;
-/*    margin-top: 25px;*/
-    margin: 2%;
-    float: left;
+
     box-shadow: 0 0 35px 5px rgba(255, 255, 0, 1);
-/*    width: 29%;*/
-    padding-top: 2%;
-    padding-bottom: 2%;
     animation: pulseYellow 4s ease-in-out infinite;
-    display:inline-block;
 }
 
 .teachResNotPresent {
-    border-radius: 5px;
-    background-color: #F6F6F6;
-/*    margin-top: 5%;*/
-    margin: 2%;
-    float: left;
     box-shadow: 0 0 35px 5px rgba(255, 0, 0, 1);
-/*    width: 29%;   */
     -webkit-filter: brightness(0.65);
-    display:inline-block;
-    padding-top: 2%;
-    padding-bottom: 2%;
     /*animation: pulseRed 8s ease-in-out infinite;*/
     /*opacity:0.5;*/
 }
@@ -104,13 +123,11 @@ body {
     float: left;
 }
 
-
-
-.teachResPresent img {
+.teachResVaxjo img, .teachResNotPresent img, .teachResPresent img {
     display: block;
     margin-left: auto;
     margin-right: auto;
-    width: 80%;
+    width: 90%;
     -webkit-box-sizing: content-box;
     -moz-box-sizing: content-box;
     box-sizing: content-box;
@@ -121,47 +138,13 @@ body {
     text-overflow: ellipsis;
     /*-webkit-box-shadow: 0 0 40px 8px rgba(0,255,0,0.5);*/
     /*box-shadow: 0 0 40px 8px rgba(0,255,0,0.5);*/
-}
-
-.teachResVaxjo img {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    width: 80%;
-    -webkit-box-sizing: content-box;
-    -moz-box-sizing: content-box;
-    box-sizing: content-box;
-    border: none;
-    color: rgba(255, 255, 255, 1);
-    text-align: center;
-    -o-text-overflow: ellipsis;
-    text-overflow: ellipsis;
-    /*-webkit-box-shadow: 0 0 40px 8px rgba(0,255,0,0.5);*/
-    /*box-shadow: 0 0 40px 8px rgba(0,255,0,0.5);*/
-}
-
-.teachResNotPresent img {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    width:80%;
-    -webkit-box-sizing: content-box;
-    -moz-box-sizing: content-box;
-    box-sizing: content-box;
-    border: none;
-    color: rgba(255, 255, 255, 1);
-    text-align: center;
-    -o-text-overflow: ellipsis;
-    text-overflow: ellipsis;
-    /*-webkit-box-shadow: 0 0 40px 8px rgba(255,0,0,0.5);*/
-    /*box-shadow: 0 0 40px 8px rgba(255,0,0,0.5);*/
-    background: black;
 }
 
 .teachTextPresent {
+    margin-top:-8%;
     margin-left: auto;
     margin-right: auto;
-    width: 80%;
+    width: 90%;
     background-color: #E5E5E5;
     display: block;
 }
@@ -169,11 +152,11 @@ body {
 .teachTextPresent p {
     color: #101010;
     font: normal 24px/1 "Trebuchet MS", Helvetica, sans-serif;
-    font-size: 2vw;
+    font-size: 1.8vw;
     -webkit-box-sizing: content-box;
     -moz-box-sizing: content-box;
     box-sizing: content-box;
-    padding: 5%;
+    padding: 3%;
     border: none;
     text-align: center;
     -o-text-overflow: ellipsis;
@@ -188,7 +171,8 @@ body {
     margin-right: auto;
     background-color: #E5E5E5;
     text-align: center;
-    width: 80%;
+    width: 90%;
+    margin-top:-8%;
     -webkit-box-sizing: content-box;
     -moz-box-sizing: content-box;
     box-sizing: content-box;
@@ -207,5 +191,4 @@ body {
     color: #101010;
     font: normal 18px/1 "Trebuchet MS", Helvetica, sans-serif;
     font-size:1.2vw;
-    padding:5%; 
 }
