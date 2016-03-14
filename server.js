@@ -84,31 +84,6 @@ app.post('/update/:id/:city/:presence', function(req, res){
 });
 
 
-//NOTE:
-//This is a temporary post that is used to make easier testning on the client
-//This is to be deleted before public
-//TODO: Remove this method before publish.
-app.post('/testRooms', function(req, res){
-		fsp.readFile(fileName, {encoding:'utf8'}).then((contents) =>{
-				let parsedContent = JSON.parse(contents);
-				let data = [];
-
-				for(let i = 0; i < parsedContent.length; i ++){
-						if(parsedContent[i].public_data.inRoom === "—" || parsedContent[i].public_data.inRoom === ""){
-							parsedContent[i].public_data.inRoom = "Ny106k, Ny107k, Ny108k";
-						}
-						else {
-							parsedContent[i].public_data.inRoom = "—";
-						}
-						data.push(parsedContent[i].public_data);
-				}
-
-				fsp.writeFile(fileName, JSON.stringify(parsedContent)).then(() => {
-						io.emit('statusUpdated', data);
-				})
-		})
-})
-
 
 //Section: MOCHA TEST START
 let server;

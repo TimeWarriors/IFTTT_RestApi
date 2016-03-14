@@ -8,7 +8,6 @@ function updatePresence(){
 	var xhr = new XMLHttpRequest();
 	//xhr.overrideMimeType("application/json");
 	
-	//xhr.open("GET", "https://tw2-mathiassundin-3.c9users.io/userData"); On server
     xhr.open("GET", "http://localhost:3000/userData"); //On localhost
 	xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 	xhr.addEventListener("load", function(res){
@@ -16,52 +15,49 @@ function updatePresence(){
         let data = JSON.parse(xhr.responseText);
         console.log(data);
         
-        let dataDiv = document.getElementById("dataDiv");
+        let mainContainer = document.getElementById("teachers-main-container");
         
         for (var i = 0; i < data.length; i++){
             let img = document.createElement("img");
-            img.className = "teachImgPresent";
+            img.className = "teacher-profile-picture";
             let textName = document.createElement("p");
+            textName.className = "teacher-name-text";
             let name = data[i].name;
             textName.textContent = name.split("_").join(" ");
-            let teachDiv = document.createElement("div");
-            teachDiv.id = name;
-            teachDiv.className = "teachResPresent";
+            let teacherDiv = document.createElement("div");
+            teacherDiv.id = name;
+            teacherDiv.className = "teacher-container";
             let textDiv = document.createElement("div");
-            textDiv.className = "teachTextPresent";
+            textDiv.className = "teacher-name-container";
             
            
             let roomDiv = document.createElement("div");
-            roomDiv.className = "roomTextDiv";
+            roomDiv.className = "teacher-location-container";
             roomDiv.id = "roomTextDiv"
             let textRoom = document.createElement("p");
-            textRoom.className = "roomText";
-            textRoom.id = "roomText";
+            textRoom.className = "teacher-location-text";
+            textRoom.id = "teacher-location-text";
             let room = data[i].inRoom;
             textRoom.textContent = room;
        
             img.src = data[i].img;
-            dataDiv.appendChild(teachDiv);
-            teachDiv.appendChild(img);
-            teachDiv.appendChild(textDiv);
-            teachDiv.appendChild(roomDiv);
+            mainContainer.appendChild(teacherDiv);
+            teacherDiv.appendChild(img);
+            teacherDiv.appendChild(textDiv);
+            teacherDiv.appendChild(roomDiv);
             textDiv.appendChild(textName)
             roomDiv.appendChild(textRoom);
             
             
             if(data[i].presence == true){
                 if (data[i].city == "Kalmar") {
-                    teachDiv.className = "teachResPresent";
+                    teacherDiv.className += " teacher-status-present";
                 } else {
-                    teachDiv.className = "teachResVaxjo";
+                    teacherDiv.className += " teacher-status-vaxjo";
                 }
             }
-            // if(data[i].presence == true){
-            //     teachDiv.className = "teachResBusyPresent";
-                
-            // }
             if(data[i].presence == false){
-                teachDiv.className = "teachResNotPresent";  
+                teacherDiv.className += " teacher-status-not-present";  
             }
              
         };
