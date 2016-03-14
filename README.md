@@ -25,6 +25,7 @@ Host the application on a chosen device that supports node js v5.7.1.
 ```
 
 It's important to note that anything you write in the public_data object will be visible on the client.
+city and inRoom can be initiated with no values.
 
 Also, the userId should be tried to be kept secret since it works like a key for controlling certain data in the public_data object. This is also only handled on the server side. If it happens to be leaked it can just be re-written in this json file, but you will also have to change the id in the API calls that will be described in the next step.
 
