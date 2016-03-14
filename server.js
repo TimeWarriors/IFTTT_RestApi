@@ -21,7 +21,9 @@ let updateFailMessage = "Presence update failed.";
 app.use(bodyParser.json());
 app.use(express.static(__dirname + "/client"))
 
-//returns the index page for the client
+/**
+ * returns the index.html
+ */
 app.get('/', function(req, res){
 	fsp.readFile(__dirname + "client/index.html", {encoding:'utf8'}).then((contents) =>{
 		res.send(contents.toString());
@@ -29,7 +31,9 @@ app.get('/', function(req, res){
 });
 
 
-//returns public data from all registerd user in usersettings.json
+/**
+ * Returns the public data for the users
+ */
 app.get("/userData", function(req, res){
 	let data = [];
 
@@ -44,11 +48,13 @@ app.get("/userData", function(req, res){
 	});
 })
 
-//If the given id parameter is valid the user is added to the queue
-//PARAMS:
-//				:id - a registerd user id.
-//				:city - city of their current location
-//				:presence - boolean, should be true if the user enters the area, false if the user leaves the area.
+/**
+ * Adds a user to the queue if given valid parameters
+ * @param  '/update
+ * /:id [id for a user, this is key for getting into the queue]
+ * /:city [the city the user is currently in.]
+ * /:presence' [boolean, true if they enter the school area, false if the leave it.]
+ */
 app.post('/update/:id/:city/:presence', function(req, res){
 
 	//NOTE: since presence is sent as param it is a string and not a booelean.
@@ -77,31 +83,6 @@ app.post('/update/:id/:city/:presence', function(req, res){
 	});
 });
 
-
-//NOTE:
-//This is a temporary post that is used to make easier testning on the client
-//This is to be deleted before public
-//TODO: Remove this method before publish.
-app.post('/testRooms', function(req, res){
-		fsp.readFile(fileName, {encoding:'utf8'}).then((contents) =>{
-				let parsedContent = JSON.parse(contents);
-				let data = [];
-
-				for(let i = 0; i < parsedContent.length; i ++){
-						if(parsedContent[i].public_data.inRoom === "—" || parsedContent[i].public_data.inRoom === ""){
-							parsedContent[i].public_data.inRoom = "Ny106k, Ny107k, Ny108k";
-						}
-						else {
-							parsedContent[i].public_data.inRoom = "—";
-						}
-						data.push(parsedContent[i].public_data);
-				}
-
-				fsp.writeFile(fileName, JSON.stringify(parsedContent)).then(() => {
-						io.emit('statusUpdated', data);
-				})
-		})
-})
 
 
 //Section: MOCHA TEST START
