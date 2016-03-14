@@ -15,6 +15,7 @@ describe('Server Tests:', function(){
     server.listen(8000);
   });
 
+  //Test 1
   it('GET should return statuscode 200', function(done){
 
       let options = {
@@ -31,6 +32,7 @@ describe('Server Tests:', function(){
       });
     });
 
+    //Test 2
     it('GET should successfully return an array contaning users', function(done){
       let options = {
         host: "localhost",
@@ -56,6 +58,7 @@ describe('Server Tests:', function(){
     });
 
 
+    //Test 3
     it('POST should successfully add a user to the queue', function(done){
         let options = {
           host: "localhost",
@@ -79,6 +82,7 @@ describe('Server Tests:', function(){
         req.end();
     });
 
+    //Test 4
     it('POST should not add a user to the queue array', function(done){
       let options = {
         host: "localhost",
@@ -127,6 +131,7 @@ describe('Queue tests:', function(){
     qh.queue = [];
   })
 
+  //Test 5
   it('Should initiate a timer when addedCount is bigger than 1 and updateTimer is undefined.', function(done){
     testChanges[0].addedCount = 1;
     //updateTimer is undefined by default
@@ -134,6 +139,7 @@ describe('Queue tests:', function(){
     done();
   });
 
+  //Test 6
   it('Should not initate a timer when addedCount is bigger or equal to 1 and updateTimer is defined', function(done){
     testChanges[0].addedCount = 1;
     qh.updateTimer = 'A defiend value';
@@ -142,12 +148,14 @@ describe('Queue tests:', function(){
     done();
   })
 
+  //Test 7
   it('Should not initate a timer when addedCount is lower or equal to 0 and updateTimer is undefined.', function(done){
     testChanges[0].addedCount = 0;
     assert(qh.handelQueue(testChanges) === false, 'Timer was initiated when addedCount is lower or equal to 0 and updateTimer is undefined.');
     done();
   });
 
+  //Test 8
   it('Should not initate a timer when addedCount is lower or equal to 0 and updateTimer is defined', function(done){
     testChanges[0].addedCount = 0;
     qh.updateTimer = 'A defined value';
@@ -155,7 +163,7 @@ describe('Queue tests:', function(){
     done();
   })
 
-
+  //Test 9
   it('Should add 2 users to the queue when they are both added at the EXACT same time.', function(done){
     let date = new Date();
 

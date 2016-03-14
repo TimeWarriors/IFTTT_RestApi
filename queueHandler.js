@@ -6,6 +6,11 @@ let nodeSchedule = require('node-schedule');
 
 let queueTime = 30;
 
+/**
+ * Constructor for the class, initiates the required values and the Array.observe event
+ * @param  {[string]} fileName [fileName for the setttings file.]
+ * @param  {[socket.io obj]} io       [socket.io refrence to make socket emits.]
+ */
 function queueHandler(fileName, io){
   this.queue = [];
   this.io = io;
@@ -19,7 +24,11 @@ function queueHandler(fileName, io){
   });
 }
 
-//Adds a user in the queue array and in turn triggers the observe.
+/**
+ * Adds a user to the queue array which will trigger the Array.observe
+ * @param  {[type]} user [description]
+ * @return {[type]}      [description]
+ */
 queueHandler.prototype.AddToQueue = function(user){
     this.queue.push(user);
 }
