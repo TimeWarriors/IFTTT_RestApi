@@ -7,8 +7,8 @@ Host the application on a chosen device that supports node js v5.7.1.
 ## Installation
 
 1. Run the command: npm install
-2. Create a file in the root named "usersettings.json"
-3. In this file you want to write in the users you wish to have registerd for the presence system. It should be built up like the following example: 
+2. Create a file in the root named "usersettings.json". (It can be something else but then you have to change the fileName varible in server.js")
+3. In this file you want to write in the users you wish to have registerd for the presence system. It should be built up like the following JSON example: 
 ```
 [
   {
@@ -25,6 +25,7 @@ Host the application on a chosen device that supports node js v5.7.1.
 ```
 
 It's important to note that anything you write in the public_data object will be visible on the client.
+
 city and inRoom can be initiated with no values.
 
 Also, the userId should be tried to be kept secret since it works like a key for controlling certain data in the public_data object. This is also only handled on the server side. If it happens to be leaked it can just be re-written in this json file, but you will also have to change the id in the API calls that will be described in the next step.
@@ -64,3 +65,15 @@ Press Create Action
 Now you can give the recipe a title, suggestions are : "LNU-IFTTT-Kalmar/Växjö" or "LNU-PresenceApp-Kalmar/Växjö". You can also just leave it be.
 
 Press Create Recipe. All you need to do now is to download the IFTTT app on your mobile device and set the recipe running.
+
+## Functionality
+
+When everything is setup and the registerd users have their IFTTT recipes up and running the server will be abel to take thier calls.
+
+What happens when a call is made fromt he IFTTT recipe?
+
+Firstly, if there isn't a current user queue, a queue is created. This queue will last for 30 seconds (time can be adjusted in the queueHandler script) and any other user who also makes a call within the same 30 seconds, including the one who first initiated the queue if he/ she is to make another call, those commands are also added to the queue. 
+
+When the queue time run out all of the requests in the queue will be executed and the statuses will be changed. 
+
+For all users in the usersettings file a search on their timeedit schedule is made daily and events are created to display any class room that they could be in at that moment. The display of the class room is of course removed when the scheduled event is over. This functionallity is automated when starting up the server and occurs each morning at 5.
