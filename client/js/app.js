@@ -25,7 +25,7 @@ function updatePresence(){
             let name = data[i].name;
             textName.textContent = name.split("_").join(" ");
             let teacherDiv = document.createElement("div");
-            teacherDiv.id = name;
+            teacherDiv.id = data[i].publicid;
             teacherDiv.className = "teacher-container";
             let textDiv = document.createElement("div");
             textDiv.className = "teacher-name-container";

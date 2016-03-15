@@ -2,17 +2,18 @@ var socket = io();
 
 socket.on('statusUpdated', (userData) => {
     for (var i = 0; i < userData.length; i++) {
-        var teachRes = document.getElementById(userData[i].name);
+        var teacherDiv = document.getElementById(userData[i].publicid);
+        console.log(teacherDiv);
+        console.log(userData[i].publicid);
         if (userData[i].presence === true) {  
             if (userData[i].city.toLowerCase() == "kalmar") {
-                teachRes.className = "teacher-status-present";
+                teacherDiv.className = "teacher-status-present";
             } else {
-                teachRes.className = "teacher-status-vaxjo";
-            }
-            teachRes.querySelector('.roomText').innerHTML = userData[i].inRoom;
+                teacherDiv.className = "teacher-status-vaxjo";
+            }          
         } else {
-            teachRes.className = "teacher-status-not-present";
-            teachRes.querySelector('.roomText').innerHTML = userData[i].inRoom;
+            teacherDiv.className = "teacher-status-not-present";
         }
+        teacherDiv.querySelector('.teacher-location-container').innerHTML = userData[i].inRoom;
     }
 })
