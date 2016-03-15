@@ -8,7 +8,7 @@ Host the application on a chosen device that supports node js v5.7.1.
 
 1. Run the command: npm install
 2. Create a file in the root named "usersettings.json". (It can be something else but then you have to change the fileName varible in server.js")
-3. In this file you want to write in the users you wish to have registerd for the presence system. It should be built up like the following JSON example: 
+3. In this file you want to write in the users you wish to have registered for the presence system. It should be built up like the following JSON example: 
 ```
 [
   {
@@ -18,7 +18,8 @@ Host the application on a chosen device that supports node js v5.7.1.
           "presence": false,
           "city": "",
           "inRoom": "",
-          "img": "URL_to_profile_picture"
+          "img": "URL_to_profile_picture",
+          "publicid": "<uniqueid>"
       }
   }, ...
 ]
