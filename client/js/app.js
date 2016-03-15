@@ -50,7 +50,7 @@ function updatePresence(){
             
             
             if(data[i].presence == true){
-                if (data[i].city == "Kalmar") {
+                if (data[i].city.toLowerCase() == "kalmar") {
                     teacherDiv.className += " teacher-status-present";
                 } else {
                     teacherDiv.className += " teacher-status-vaxjo";
