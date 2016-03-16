@@ -7,6 +7,7 @@ let nodeSchedule = require('node-schedule');
 let timeEditApi = require('timeeditapi');
 
 let timeEdit = new timeEditApi('https://se.timeedit.net/web/lnu/db1/schema1/', 3);
+let baseURL = "https://se.timeedit.net/web/lnu/db1/schema1/s.html?i=";
 
 /**
  * constructor for this class which initiates base values and call the InitiateTimers method.
@@ -27,8 +28,8 @@ scheduleHandler.prototype.InitiateTimers = function(){
 
 	let rule = new nodeSchedule.RecurrenceRule();
 
-	rule.hour = 5;
-	//rule.second = 30;
+	//rule.hour = 5;
+	rule.second = 30;
 
 	let that = this;
 
@@ -145,19 +146,48 @@ scheduleHandler.prototype.getUserSchedule = function(user){
 
 	return new Promise((resolve, reject) => {
 		let data = [];
+		let index = 0;
 
-		timeEdit.getTodaysSchedule(user.public_data.name.split("_").join(" ")).then((schedule) =>{
+		timeEditApi.getScheduleByScheduleUrl(baseURL + user.public_data.publicid).then((schedule) =>{
+			//console.log(JSON.stringify(schedule, null, 2));
+			var date = new Date();
 
+			//if the search dident find anything then
 			if(schedule[0].booking === undefined){
-				console.log("No more bookings for this person this day.")
+				console.log("No more bookings for this person on their schedule. : " + user.public_data.name);
 			}
 			else {
-				for(let j = 0; j < schedule.length; j++){
 
-				data.push({startTime: schedule[j].booking.time.startTime,
-						  endTime: schedule[j].booking.time.endTime,
-						 	lectureRoom: schedule[j].booking.columns[2] || "—"
-					 	})
+				console.log(schedule[0].booking.time.startDate);
+
+				//Array that contains [year, month, date] for the first scheduled event
+				let startDate = schedule[index].booking.time.startDate.split("-");
+
+				//Date for the first scheduled event
+				let scheDate = new Date(startDate[0], startDate[1], startDate[2]);
+				console.log(scheDate);
+
+
+				if(scheDate.getFullYear() === date.getFullYear() && scheDate.getMonth() === date.getMonth() + 1){
+						//if the current event is scheduled for today then it's true
+						let isToday = (scheDate.getDate() === date.getDate());
+						console.log("Is the event for today? : " + isToday)
+						//console.log("Should it be? : " + scheDate + " and " + date)
+
+						//This will loop while the scheduled events are for today
+						while(isToday){
+							console.log("Added");
+									data.push({
+										startTime: schedule[index].booking.time.startTime,
+										endTime: schedule[index].booking.time.endTime,
+										lectureRoom: schedule[index].booking.columns[2] || "—"
+									});
+									index += 1;
+									startDate = schedule[index].booking.time.startDate.split("-");
+									scheDate = new Date(startDate[0], startDate[1], startDate[2]);
+									isToday = (scheDate.getDate() === date.getDate());
+						}
+						console.log("Not more adding.")
 				}
 			}
 
