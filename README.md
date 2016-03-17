@@ -39,6 +39,7 @@ Search for the user you are currently registering and click to show their schedu
 Step 2: 
 
 The following image displays where you find the id that you need to put into the public_data object. It's the part right after the ".html?i="
+
 <img src="http://i.imgur.com/OzATPH2.png"></img>
 
 Also, the userId should be tried to be kept secret since it works like a key for controlling certain data in the public_data object. This is also only handled on the server side. If it happens to be leaked it can just be re-written in this json file, but you will also have to change the id in the API calls that will be described in the next step.
