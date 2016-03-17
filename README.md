@@ -19,7 +19,7 @@ Host the application on a chosen device that supports node js v5.7.1.
           "city": "",
           "inRoom": "",
           "img": "URL_to_profile_picture",
-          "publicid": "<uniqueid>"
+          "publicid": "6Y7XYQQ7wZ36QvZ5071875y6YQ8"
       }
   }, ...
 ]
@@ -28,6 +28,18 @@ Host the application on a chosen device that supports node js v5.7.1.
 It's important to note that anything you write in the public_data object will be visible on the client.
 
 city and inRoom can be initiated with no values.
+
+How to get publicid:
+
+publicid is a unique id that is created on the users TimeEdit schedule. Here is how you aquire one for a user, step 1:
+
+Search for the user you are currently registering and click to show their schedule. NOTE: It's VEARY important that the search and display of the schedule will be only for that one person since the search on their schedule will be dependent on the URL!
+<img src="http://i.imgur.com/IFEjEda.png"></img>
+
+Step 2: 
+
+The following image displays where you find the id that you need to put into the public_data object. It's the part right after the ".html?i="
+<img src="http://i.imgur.com/OzATPH2.png"></img>
 
 Also, the userId should be tried to be kept secret since it works like a key for controlling certain data in the public_data object. This is also only handled on the server side. If it happens to be leaked it can just be re-written in this json file, but you will also have to change the id in the API calls that will be described in the next step.
 
