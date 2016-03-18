@@ -96,4 +96,4 @@ For all users in the usersettings file a search on their timeedit schedule is ma
 
 
 ###Advanced side notes
-* The script TestScript.js will simulate a call to the server when ran. This can be used to test functionality when the installation has been complete. Note that it right now makes a call to localhost:3000 since this is the port we tested the application on. If hosted live this data will have to be changed in the script in the "options" object found on row 44. It's also important if you want to run this script that you set the ID of the user you want to test it on, this can be done on row 13.
+* The script TestScript.js will simulate a call to the server when ran. This can be used to test functionality when the installation has been complete. Note that it right now makes a call to localhost:3000 since this is the port we tested the application on. If hosted live this data will have to be changed in the script in the "options" object found on row 44. It's also important if you want to run this script that you set the ID of the user you want to test it on, this can be done on row 13 with the testID varible.
