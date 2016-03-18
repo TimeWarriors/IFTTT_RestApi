@@ -27,8 +27,8 @@ scheduleHandler.prototype.InitiateTimers = function(){
 
 	let rule = new nodeSchedule.RecurrenceRule();
 
-	rule.hour = 5;
-	//rule.second = 30;
+	//rule.hour = 5;
+	rule.second = 30;
 
 	let that = this;
 
@@ -114,16 +114,28 @@ scheduleHandler.prototype.InitiateTimers = function(){
 			//[ { time: 12:00, userEvents: [{id: bookedUsers[x].userId, room: bookedUsers[x].bookingData.lectureRoom}, ... ] }, ...]
 			let scheduledEvents = [];
 
+			//this array will contain all events that has not been used yet to decrease the second loop over time.
+			let unusedEvents = Events;
+			//this will temporarily store all events that have not been used within the loop to later overwrite the unusedEvents array
+			let eventStorage = [];
+
 			for (let i = 0; i < EventTimes.length; i++){
 				scheduledEvents.push({time : EventTimes[i], events: []})
-				for (let j = 0; j < Events.length; j++){
+				for (let j = 0; j < unusedEvents.length; j++){
 
-					if(Events[j].time === EventTimes[i]){
-						scheduledEvents[i].events.push(Events[j]);
-						//remove the obj to shorten furhter loops.
-						Events.splice(j, 1);
+					//If an event is scheduled for this time it gets added to the event array.
+					if(unusedEvents[j].time === EventTimes[i]){
+						scheduledEvents[i].events.push(unusedEvents[j]);
+						//Note: using Events.splice(j,1) causes a bugg where a event that should be removed yet gets removed.
+					}
+					//else it will be stored for a later event. This process is to optimize the looping.
+					else {
+						eventStorage.push(unusedEvents[j]);
 					}
 				}
+
+				unusedEvents = eventStorage;
+				eventStorage = [];
 			}
 
 			that.scheduleEvents(scheduledEvents, that.fileName);
@@ -149,22 +161,17 @@ scheduleHandler.prototype.getUserSchedule = function(user){
 		timeEditApi.getScheduleByScheduleUrl(baseURL + user.public_data.publicid).then((schedule) =>{
 
 			var date = new Date();
-
 			//if the search dident find anything then
 			if(schedule[0].booking === undefined){
 				console.log("No more bookings for this person on their schedule. : " + user.public_data.name);
 			}
 			else {
 
-				console.log(schedule[0].booking.time.startDate);
-
 				//Array that contains [year, month, date] for the first scheduled event
 				let startDate = schedule[index].booking.time.startDate.split("-");
 
 				//Date for the first scheduled event
 				let scheDate = new Date(startDate[0], startDate[1], startDate[2]);
-				console.log(scheDate);
-
 
 				if(scheDate.getFullYear() === date.getFullYear() && scheDate.getMonth() === date.getMonth() + 1){
 						//if the current event is scheduled for today then it's true
@@ -214,23 +221,18 @@ scheduleHandler.prototype.scheduleEvents = function(scheduledEvents, fileName){
 		hour = scheduledEvents[i].time.substr(0, stringIndex);
 		minute = scheduledEvents[i].time.substr(stringIndex + 1);
 
-		//Saves the data for this scheduled event to later bind it to the scheduledJob
-		let events = scheduledEvents[i].events;
-
-
-
 		//initates a scheduled job and sends all the data scheduled for that time.
-		nodeSchedule.scheduleJob(new Date(date.getFullYear(), date.getMonth(), date.getDate(), hour, minute, 0), function(self, scheduledEvents){
+		nodeSchedule.scheduleJob(new Date(date.getFullYear(), date.getMonth(), date.getDate(), 12, 58, 0), function(eventData){
 
 			fsp.readFile(fileName, {encoding:'utf8'}).then((contents) => {
 				let parsedContents = JSON.parse(contents);
 				let content = [];
 
-				for(let i = 0; i < events.length; i++){
+				for(let i = 0; i < eventData.length; i++){
 					for (let j = 0; j < parsedContents.length; j++){
-						if(events[i].id === parsedContents[j].userId){
+						if(eventData[i].id === parsedContents[j].userId){
 
-							parsedContents[j].public_data.inRoom = events[i].lectureRoom;
+							parsedContents[j].public_data.inRoom = eventData[i].lectureRoom;
 
 							content.push(parsedContents[j].public_data)
 							break;
@@ -243,7 +245,7 @@ scheduleHandler.prototype.scheduleEvents = function(scheduledEvents, fileName){
 				});
 			});
 
-		}.bind(null, events))
+		}.bind(null, scheduledEvents[i].events))
 	}
 }
 
