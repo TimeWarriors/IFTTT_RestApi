@@ -95,5 +95,5 @@ When the queue time run out all of the requests in the queue will be executed an
 For all users in the usersettings file a search on their timeedit schedule is made daily and events are created to display any class room that they could be in at that moment. The display of the class room is of course removed when the scheduled event is over. This functionallity is automated when starting up the server and occurs each morning at 5.
 
 
-###Side notes
+###Advanced side notes
 * The script TestScript.js will simulate a call to the server when ran. This can be used to test functionality when the installation has been complete. Note that it right now makes a call to localhost:3000 since this is the port we tested the application on. If hosted live this data will have to be changed in the script in the "options" object found on row 44. It's also important if you want to run this script that you set the ID of the user you want to test it on, this can be done on row 13.
