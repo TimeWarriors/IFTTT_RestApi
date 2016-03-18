@@ -147,7 +147,7 @@ scheduleHandler.prototype.getUserSchedule = function(user){
 		let index = 0;
 
 		timeEditApi.getScheduleByScheduleUrl(baseURL + user.public_data.publicid).then((schedule) =>{
-			//console.log(JSON.stringify(schedule, null, 2));
+
 			var date = new Date();
 
 			//if the search dident find anything then
@@ -190,7 +190,7 @@ scheduleHandler.prototype.getUserSchedule = function(user){
 			return resolve(user);
 
 		}).catch(function(e){
-			console.log("Error :" + e);
+			console.log("Error when getting the schedule occured: " + e);
 			reject(e);
 		});
 	});

@@ -1,4 +1,11 @@
 "use strict";
+/**
+ * This script was merley used for testing purposes.
+ * It simulates a call to the server that would then add a user in the queue.
+ *
+ * The testID needs to be the same as of the user you want to test it on.
+ */
+
 
 let http = require('http');
 let fsp = require('fs-promise');
@@ -7,8 +14,9 @@ let testID = "1234";
 let testValue;
 
 
-//test script for the app.post
-//It simulates a call that would be made from IFTTT
+/**
+ * Tests adding a user in the queue by sending simulation data to the server.
+ */
 let testRun = function(){
 
 	fsp.readFile("usersettings.json", {encoding:'utf8'}).then((contents) =>{
@@ -48,31 +56,6 @@ let testRun = function(){
 
 
 	});
-}
-
-
-
-let testBody = function(){
-
-	let postData = JSON.stringify({
-		msg: 'Hello worldu.'
-	})
-	let options = {
-			host: "localhost",
-			path: "/test",
-			method: 'POST',
-			port: '3000',
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		};
-
-		let req = http.request(options);
-
-		req.write(postData)
-	   	req.end();
-
-		//console.log("After end.")
 }
 
 testRun();
