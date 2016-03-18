@@ -6,7 +6,6 @@ let Promise = require('promise');
 let nodeSchedule = require('node-schedule');
 let timeEditApi = require('timeeditapi');
 
-let timeEdit = new timeEditApi('https://se.timeedit.net/web/lnu/db1/schema1/', 3);
 let baseURL = "https://se.timeedit.net/web/lnu/db1/schema1/s.html?i=";
 
 /**
@@ -28,8 +27,8 @@ scheduleHandler.prototype.InitiateTimers = function(){
 
 	let rule = new nodeSchedule.RecurrenceRule();
 
-	//rule.hour = 5;
-	rule.second = 30;
+	rule.hour = 5;
+	//rule.second = 30;
 
 	let that = this;
 
@@ -53,7 +52,6 @@ scheduleHandler.prototype.InitiateTimers = function(){
 
 					//Daily reset for the presence status for all registerd users
 					parsedData[i].public_data.presence = false;
-					//
 
 					//Gets user schedule
 					that.getUserSchedule(parsedData[i]).then((userData)=>{
@@ -63,7 +61,7 @@ scheduleHandler.prototype.InitiateTimers = function(){
 						}
 						//else if a user doesnt have a booking for the day the expected index is lowerd.
 						else {
-							expectedIndex -= 1;
+								expectedIndex -= 1;
 						}
 
 						//Bookedusers length and expected length are equal then the loop is finished
@@ -171,12 +169,9 @@ scheduleHandler.prototype.getUserSchedule = function(user){
 				if(scheDate.getFullYear() === date.getFullYear() && scheDate.getMonth() === date.getMonth() + 1){
 						//if the current event is scheduled for today then it's true
 						let isToday = (scheDate.getDate() === date.getDate());
-						console.log("Is the event for today? : " + isToday)
-						//console.log("Should it be? : " + scheDate + " and " + date)
 
 						//This will loop while the scheduled events are for today
 						while(isToday){
-							console.log("Added");
 									data.push({
 										startTime: schedule[index].booking.time.startTime,
 										endTime: schedule[index].booking.time.endTime,
@@ -187,7 +182,6 @@ scheduleHandler.prototype.getUserSchedule = function(user){
 									scheDate = new Date(startDate[0], startDate[1], startDate[2]);
 									isToday = (scheDate.getDate() === date.getDate());
 						}
-						console.log("Not more adding.")
 				}
 			}
 
