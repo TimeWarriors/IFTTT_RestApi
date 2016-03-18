@@ -27,8 +27,8 @@ scheduleHandler.prototype.InitiateTimers = function(){
 
 	let rule = new nodeSchedule.RecurrenceRule();
 
-	//rule.hour = 5;
-	rule.second = 30;
+	rule.hour = 5;
+	//rule.second = 30;
 
 	let that = this;
 
